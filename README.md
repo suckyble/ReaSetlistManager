@@ -5,6 +5,9 @@ A robust, browser-based Setlist Manager designed for live performance with **Coc
 This web app reads your Reaper project's **Regions** as songs, allowing you to drag-and-drop them into setlists, control playback, and manage song transitions seamlessly from a tablet or laptop.
 
 
+![screenshot](img/ReaSetlistManager.jpg)
+
+
 ## 🌟 Key Features
 
 * **Live Region Sync:** Automatically pulls song names and durations from your Reaper project regions.
