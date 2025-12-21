@@ -1,8 +1,5 @@
 # ReaSetlistManager
 
-
-# Reaper Setlist Manager
-
 A robust, browser-based Setlist Manager designed for live performance with **Cockos REAPER**. 
 
 This web app reads your Reaper project's **Regions** as songs, allowing you to drag-and-drop them into setlists, control playback, and manage song transitions seamlessly from a tablet or laptop.
