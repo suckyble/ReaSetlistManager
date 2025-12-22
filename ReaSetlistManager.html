@@ -507,6 +507,12 @@
             newItems.forEach(rData => {
                 displayList.push({ ...rData, chain: false });
             });
+
+            // --- AUTO-INIT PLAYHEAD ---
+            if (displayList.length > 0) {
+                // Move playhead to start of first song on first load
+                wwr_req("SET/POS/" + displayList[0].start);
+            }
             
             initialized = true;
         } 
@@ -637,6 +643,7 @@
                 if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + "%";
             }
 
+            // Playback Logic
             let timeRemaining = activeRegion.end - currentPos;
             if (timeRemaining <= 0.2 && timeRemaining > -1 && isPlaying) {
                 if (queuedRegion) {
@@ -808,6 +815,88 @@
             setTimeout(() => { isDragging = false; }, 200);
         }
     });
+
+    // --- 10. KEYBOARD CONTROLS (CUSTOM MAP) ---
+    document.addEventListener('keydown', function(event) {
+        
+        let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
+
+        // SPACE: Toggle Play/Pause (Smart Start)
+        if (event.code === 'Space') {
+            event.preventDefault(); 
+            if (isPlaying) {
+                wwr_req(1008); // Pause
+            } else {
+                if (activeIdx === -1 && displayList.length > 0) {
+                    playRegion(displayList[0].start, displayList[0].id);
+                } else {
+                    wwr_req(1007); // Play
+                }
+            }
+        }
+
+        // ENTER: PANIC STOP
+        if (event.code === 'Enter') {
+            event.preventDefault();
+            wwr_req(1016); // Stop Immediately
+            // Move playhead to start of current song
+            if (activeIdx !== -1) {
+                wwr_req("SET/POS/" + displayList[activeIdx].start);
+            }
+        }
+        
+        // LEFT ARROW: RESTART CURRENT
+        if (event.code === 'ArrowLeft') {
+            event.preventDefault();
+            if (activeIdx !== -1) {
+                // If active, restart
+                playRegion(displayList[activeIdx].start, displayList[activeIdx].id);
+                flashRow(displayList[activeIdx].id);
+            }
+        }
+
+        // RIGHT ARROW: NEXT SONG
+        if (event.code === 'ArrowRight') {
+            event.preventDefault();
+            let targetItem;
+            if (activeIdx === -1) targetItem = displayList[0];
+            else if (activeIdx + 1 < displayList.length) targetItem = displayList[activeIdx + 1];
+
+            if (targetItem) {
+                playRegion(targetItem.start, targetItem.id);
+                flashRow(targetItem.id);
+            }
+        }
+
+        // UP ARROW: PREVIOUS SONG
+        if (event.code === 'ArrowUp') {
+            event.preventDefault();
+            if (activeIdx > 0) {
+                let targetItem = displayList[activeIdx - 1];
+                playRegion(targetItem.start, targetItem.id);
+                flashRow(targetItem.id);
+            }
+        }
+
+        // DOWN ARROW: START OF SET (Song 1)
+        if (event.code === 'ArrowDown') {
+            event.preventDefault();
+            if (displayList.length > 0) {
+                playRegion(displayList[0].start, displayList[0].id);
+                flashRow(displayList[0].id);
+            }
+        }
+    });
+
+    // Helper for key feedback
+    function flashRow(id) {
+        let btn = document.querySelector(`#row-${id} .load-btn`);
+        if(btn) {
+            btn.style.backgroundColor = "#2196F3";
+            btn.style.color = "white";
+            setTimeout(() => { btn.style.backgroundColor = ""; btn.style.color = ""; }, 200);
+        }
+    }
 
     function showHelp(topic) {
         const msgs = {
