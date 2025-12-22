@@ -76,7 +76,7 @@ Open the Access URL on your tablet or browser.
 * **(↓) Export:** Download a `.json` backup of all your setlists and settings.
 * **(↑) Import:** Restore setlists from a `.json` file (overwrites current data).
 
-## 4. Keyboard & Footswitch Control
+### 4. Keyboard & Footswitch Control
 
 This app is can also work with **Bluetooth Page Turners** (AirTurn/PageFlip) and **USB Foot Pedals**.
 
