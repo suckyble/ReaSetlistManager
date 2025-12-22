@@ -54,6 +54,7 @@ Open the Access URL on your tablet or browser.
 * **PLAY / STOP:** Standard transport controls.
 * **RESYNC (↻):** If the connection drops or the tablet wakes from sleep, click this to restart the data stream without reloading the page.
 
+
 #### Toggle Switches
 * **Auto-Scroll:** Keeps the currently playing song centered on the screen.
 * **Queue Mode:** * *ON:* Clicking "PLAY NEXT" waits for the current song to finish, then jumps.
@@ -74,6 +75,19 @@ Open the Access URL on your tablet or browser.
 * **(x) Button:** Delete the current setlist.
 * **(↓) Export:** Download a `.json` backup of all your setlists and settings.
 * **(↑) Import:** Restore setlists from a `.json` file (overwrites current data).
+
+## 4. Keyboard & Footswitch Control
+
+This app is can also work with **Bluetooth Page Turners** (AirTurn/PageFlip) and **USB Foot Pedals**.
+
+| Key | Function | Behavior |
+| :--- | :--- | :--- |
+| **Space** | **Play / Pause** | **Smart Start:** Resumes playback. Automatically jumps to **Song #1** if playhead is in no region. |
+| **Enter** | **PANIC STOP** | **Stop & Rewind.** Immediately stops playback and moves the playhead to the *start* of the current song. |
+| **Right ➡** | **Play Next** | Jumps to the start of the **Next** song and plays immediately. |
+| **Left ⬅** | **Restart Song** | Jumps to the start of the **Current** song and restarts playback. |
+| **Up ⬆** | **Play Previous** | Jumps to the start of the **Previous** song and plays immediately. |
+| **Down ⬇** | **Reset Set** | Jumps to the start of **Song #1** (Top of Setlist) and plays. |
 
 ## ⚙️ Technical Details
 
