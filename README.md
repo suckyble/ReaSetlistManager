@@ -17,6 +17,7 @@ This web app reads your Reaper project's **Regions** as songs, allowing you to d
     * **Queue Mode:** Queue the next song to start seamlessly when the current one finishes.
     * **Auto-Stop:** Automatically stop playback at the end of a song.
     * **Follow Actions (Chaining):** Link specific songs together to play continuously (overriding Auto-Stop), allowing for custom mini-sets or medleys.
+    * **Skip / Disable Songs:** Mark specific songs to be skipped. Playback will automatically jump over them to the next active song.
 * **Visual Feedback:** Large progress bars and active song highlighting.
 * **Data Persistence:** All setlists and settings are saved automatically to your browser's Local Storage.
 * **Backup:** Export and Import your setlist data via JSON files.
@@ -82,11 +83,11 @@ This app is can also work with **Bluetooth Page Turners** (AirTurn/PageFlip) and
 
 | Key | Function | Behavior |
 | :--- | :--- | :--- |
-| **Space** | **Play / Pause** | **Smart Start:** Resumes playback. Automatically jumps to **Song #1** if playhead is in no region. |
-| **Enter** | **PANIC STOP** | **Stop & Rewind.** Immediately stops playback and moves the playhead to the *start* of the current song. |
-| **Right ➡** | **Play Next** | Jumps to the start of the **Next** song and plays immediately. |
-| **Left ⬅** | **Restart Song** | Jumps to the start of the **Current** song and restarts playback. |
-| **Up ⬆** | **Play Previous** | Jumps to the start of the **Previous** song and plays immediately. |
+| **Space** | **Play / Pause** | **Smart Start:** Toggles Play/Pause. If stopped at the start of the session, it automatically jumps to **Song #1**. |
+| **Enter** | **PANIC STOP** | **Stop & Rewind:** Immediately stops playback and resets the playhead to the *start* of the current song. |
+| **Right ➡** | **Play Next** | Cues the **Next** song (stops and jumps to start). Automatically skips disabled tracks. |
+| **Up ⬆** | **Play Previous** | Cues the **Previous** song (stops and jumps to start). Automatically skips disabled tracks. |
+| **Left ⬅** | **Restart Song** | Jumps to the start of the **Current** song and restarts playback immediately. |
 | **Down ⬇** | **Reset Set** | Jumps to the start of **Song #1** (Top of Setlist) and plays. |
 
 ## ⚙️ Technical Details
