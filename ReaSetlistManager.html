@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     
     <style>
-        /* --- GLOBAL STYLES --- */
+        /* --- GLOBAL & THEME --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
@@ -71,38 +71,10 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-        .btn-add { 
-            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
-            color: white;
-            border-color: rgba(76, 175, 80, 0.3);
-        }
-        .btn-add:hover { 
-            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.5);
-        }
-        .btn-del { 
-            background: linear-gradient(135deg, #c62828 0%, #f44336 100%);
-            color: white;
-            border-color: rgba(244, 67, 54, 0.3);
-        }
-        .btn-del:hover {
-            box-shadow: 0 4px 16px rgba(244, 67, 54, 0.5);
-        }
-        .btn-exp { 
-            background: linear-gradient(135deg, #1565C0 0%, #2196F3 100%);
-            color: white;
-            border-color: rgba(33, 150, 243, 0.3);
-        }
-        .btn-exp:hover {
-            box-shadow: 0 4px 16px rgba(33, 150, 243, 0.5);
-        }
-        .btn-imp { 
-            background: linear-gradient(135deg, #EF6C00 0%, #FF9800 100%);
-            color: white;
-            border-color: rgba(255, 152, 0, 0.3);
-        }
-        .btn-imp:hover {
-            box-shadow: 0 4px 16px rgba(255, 152, 0, 0.5);
-        }
+        .btn-add { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; border-color: rgba(76, 175, 80, 0.3); }
+        .btn-del { background: linear-gradient(135deg, #c62828 0%, #f44336 100%); color: white; border-color: rgba(244, 67, 54, 0.3); }
+        .btn-exp { background: linear-gradient(135deg, #1565C0 0%, #2196F3 100%); color: white; border-color: rgba(33, 150, 243, 0.3); }
+        .btn-imp { background: linear-gradient(135deg, #EF6C00 0%, #FF9800 100%); color: white; border-color: rgba(255, 152, 0, 0.3); }
 
         /* Transport Row */
         .transport-row { display: flex; gap: 12px; width: 100%; }
@@ -114,67 +86,24 @@
             position: relative;
             overflow: hidden;
         }
-        .btn-transport::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-        .btn-transport:active::before {
-            width: 300px;
-            height: 300px;
-        }
-        .btn-transport:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-        }
         .btn-transport:active { transform: scale(0.98); }
-        .btn-play { 
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-        }
-        .btn-play:hover {
-            box-shadow: 0 6px 24px rgba(46, 125, 50, 0.5);
-        }
-        .btn-stop { 
-            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
-        }
-        .btn-stop:hover {
-            box-shadow: 0 6px 24px rgba(211, 47, 47, 0.5);
-        }
-        .btn-refresh { 
-            background: linear-gradient(135deg, #37474f 0%, #546e7a 100%);
-        }
-        .btn-refresh:hover {
-            box-shadow: 0 6px 24px rgba(84, 110, 122, 0.5);
-        }
+        .btn-play { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); }
+        .btn-stop { background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%); }
+        .btn-refresh { background: linear-gradient(135deg, #37474f 0%, #546e7a 100%); }
 
         /* Toggles Row */
         .toggles-row { 
-            display: flex; 
-            justify-content: space-around; 
+            display: flex; justify-content: space-around; 
             background: rgba(37, 37, 37, 0.6);
-            padding: 12px; 
-            border-radius: 12px;
+            padding: 12px; border-radius: 12px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .toggle-wrapper { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            color: #aaa;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 10px; 
+            font-size: 11px; text-transform: uppercase; color: #aaa;
+            font-weight: 600; letter-spacing: 0.5px;
         }
-        
         .help-icon {
             display: inline-flex; justify-content: center; align-items: center;
             width: 18px; height: 18px; border-radius: 50%;
@@ -182,13 +111,6 @@
             color: #fff; font-weight: bold; font-size: 11px;
             cursor: pointer; margin-left: 2px; 
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-        .help-icon:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #546e7a 0%, #607d8b 100%);
-            box-shadow: 0 4px 12px rgba(96, 125, 139, 0.4);
         }
 
         /* Switches */
@@ -197,8 +119,7 @@
         .slider { 
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
             background: linear-gradient(135deg, #37474f 0%, #455a64 100%);
-            transition: .4s; 
-            border-radius: 34px;
+            transition: .4s; border-radius: 34px;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
         .slider:before { 
@@ -207,16 +128,8 @@
             transition: .4s; border-radius: 50%;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        input:checked + .slider { 
-            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
-            box-shadow: 0 0 12px rgba(33, 150, 243, 0.4);
-        }
-        input:checked + .slider:before { 
-            transform: translateX(18px);
-        }
-        .slider:hover {
-            opacity: 0.9;
-        }
+        input:checked + .slider { background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
         /* --- SETLIST LIST --- */
         #setlist { 
@@ -225,12 +138,8 @@
         }
         .region-item { 
             background: linear-gradient(135deg, rgba(37, 37, 37, 0.8) 0%, rgba(30, 30, 40, 0.8) 100%);
-            margin-bottom: 12px; 
-            padding: 14px; 
-            border-radius: 12px;
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
+            margin-bottom: 12px; padding: 14px; border-radius: 12px;
+            display: flex; align-items: center; gap: 12px; 
             border-left: 4px solid #37474f;
             counter-increment: song-counter; 
             box-shadow: 0 4px 16px rgba(0,0,0,0.3);
@@ -254,121 +163,97 @@
             animation: pulse 1.5s ease-in-out infinite;
             box-shadow: 0 6px 24px rgba(255, 213, 79, 0.3);
         }
+        
+        .region-item.skipped {
+            opacity: 0.4;
+            border-left-color: #444;
+            background: #1a1a1a;
+            filter: grayscale(100%);
+        }
         .region-item.sortable-drag { opacity: 0; }
         
         .region-index {
-            font-size: 20px; 
-            font-weight: 800; 
-            color: #546e7a; 
-            min-width: 30px; 
-            text-align: center;
+            font-size: 20px; font-weight: 800; color: #546e7a; 
+            min-width: 30px; text-align: center;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .region-index::before { content: counter(song-counter); }
 
         .drag-handle { 
-            font-size: 24px; 
-            color: #607d8b; 
-            padding: 5px; 
-            cursor: grab; 
-            line-height: 1;
-            transition: all 0.3s ease;
+            font-size: 24px; color: #607d8b; padding: 5px; 
+            cursor: grab; line-height: 1; transition: all 0.3s ease;
         }
-        .drag-handle:hover {
-            color: #90caf9;
-            transform: scale(1.1);
-        }
-        .drag-handle:active {
-            cursor: grabbing;
-        }
+        .drag-handle:hover { color: #90caf9; transform: scale(1.1); }
+        .drag-handle:active { cursor: grabbing; }
         
         .song-info { flex-grow: 1; min-width: 0; }
         .song-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: baseline; }
         .song-name { 
-            font-weight: 600; 
-            color: #fff; 
-            font-size: 1.1em;
+            font-weight: 600; color: #fff; font-size: 1.1em;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .song-duration { 
             font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-            color: #90a4ae;
-            font-weight: 500;
-            font-size: 0.95em;
+            color: #90a4ae; font-weight: 500; font-size: 0.95em;
         }
         
         .progress-bg { 
             background: rgba(17, 17, 17, 0.6);
-            height: 6px; 
-            width: 100%; 
-            border-radius: 10px; 
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            height: 6px; width: 100%; border-radius: 10px; 
+            overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
         .progress-fill { 
             background: linear-gradient(90deg, #00e676 0%, #00c853 100%);
-            height: 100%; 
-            width: 0%; 
-            transition: width 0.1s linear;
+            height: 100%; width: 0%; transition: width 0.1s linear;
             box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
         }
         
         .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-        
+        .btn-row-group { display: flex; gap: 6px; width: 100%; }
+
         .load-btn { 
             background: linear-gradient(135deg, rgba(33, 150, 243, 0.2) 0%, rgba(33, 150, 243, 0.1) 100%);
-            color: #64b5f6; 
-            border: 1px solid rgba(33, 150, 243, 0.5);
-            border-radius: 8px; 
-            padding: 8px 14px; 
-            font-size: 12px; 
-            font-weight: bold;
-            white-space: nowrap; 
-            cursor: pointer; 
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            color: #64b5f6; border: 1px solid rgba(33, 150, 243, 0.5);
+            border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: bold;
+            white-space: nowrap; cursor: pointer; width: 100%;
+            transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .load-btn:hover {
             background: linear-gradient(135deg, rgba(33, 150, 243, 0.3) 0%, rgba(33, 150, 243, 0.2) 100%);
-            border-color: #2196F3;
-            color: #90caf9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+            border-color: #2196F3; color: #90caf9; transform: translateY(-2px);
         }
         .load-btn:active { 
             background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
-            color: white;
-            transform: translateY(0);
+            color: white; transform: translateY(0);
         }
 
         .chain-btn {
-            background: rgba(51, 51, 51, 0.6);
-            color: #78909c;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px; 
-            padding: 6px; 
-            width: 100%; 
-            text-align: center; 
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            background: rgba(51, 51, 51, 0.6); color: #78909c;
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; 
+            padding: 6px; width: 50%; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; font-weight: bold;
         }
-        .chain-btn:hover {
-            background: rgba(69, 69, 69, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
+        .chain-btn:hover { background: rgba(69, 69, 69, 0.8); transform: translateY(-2px); }
         .chain-btn.linked { 
             background: linear-gradient(135deg, rgba(27, 94, 32, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%);
-            color: #a5d6a7;
-            border-color: rgba(76, 175, 80, 0.5);
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+            color: #a5d6a7; border-color: rgba(76, 175, 80, 0.5);
         }
-        .chain-btn.linked:hover {
-            background: linear-gradient(135deg, rgba(27, 94, 32, 0.9) 0%, rgba(46, 125, 50, 0.9) 100%);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+        /* CSS MAGIC: Always hide chain button on last item */
+        #setlist .region-item:last-child .chain-btn {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .skip-btn {
+            background: rgba(51, 51, 51, 0.6); color: #78909c;
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; 
+            padding: 6px; width: 50%; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; font-weight: bold;
+        }
+        .skip-btn:hover { background: rgba(69, 69, 69, 0.8); transform: translateY(-2px); }
+        .skip-btn.skipped { 
+            background: linear-gradient(135deg, rgba(183, 28, 28, 0.8) 0%, rgba(211, 47, 47, 0.8) 100%);
+            color: #ef9a9a; border-color: rgba(244, 67, 54, 0.5);
         }
 
         @keyframes pulse { 
@@ -392,7 +277,7 @@
 
     <div class="transport-row">
         <button class="btn-transport btn-play" onclick="wwr_req(1007)">&#9654; PLAY</button>
-        <button class="btn-transport btn-stop" onclick="wwr_req(1016)">&#9632; STOP</button>
+        <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
         <button class="btn-transport btn-refresh" onclick="wwr_start()">&#8635; RESYNC</button>
     </div>
 
@@ -431,13 +316,11 @@
     let queuedRegion = null;
     let lastActiveID = null;
     let lastRenderChecksum = "";
-    
-    // Drag State Flags
     let isDragging = false;
     let initialized = false;
 
-    // STORAGE
-    const STORAGE_KEY = "reaper_setlists_v5"; // Version bump
+    // STORAGE - Version 9
+    const STORAGE_KEY = "reaper_setlists_v9"; 
     const CURRENT_KEY = "reaper_current_setlist";
 
     // LOAD
@@ -471,11 +354,10 @@
         }
     }
 
-    // --- 4. SYNC LOGIC (SCREEN IS AUTHORITY) ---
+    // --- 4. SYNC LOGIC ---
     function syncRegions() {
         if (isDragging) return;
 
-        // 1. Build Map of Live Reaper Data
         let reaperMap = new Map();
         for (let r of g_regions) {
             if (r.length > 4) {
@@ -489,38 +371,27 @@
             }
         }
 
-        // 2. INITIAL LOAD: If displayList is empty, build it from Storage
         if (displayList.length === 0 && !initialized) {
             let savedList = setlists[currentSetlistName];
-            
-            // Build initial order from save
             savedList.forEach(item => {
                 if (reaperMap.has(item.id)) {
                     let rData = reaperMap.get(item.id);
-                    displayList.push({ ...rData, chain: item.chain });
+                    displayList.push({ ...rData, chain: item.chain, skipped: item.skipped === true });
                     reaperMap.delete(item.id);
                 }
             });
-            
-            // Add remaining (new) items
             let newItems = Array.from(reaperMap.values()).sort((a,b) => a.start - b.start);
             newItems.forEach(rData => {
-                displayList.push({ ...rData, chain: false });
+                displayList.push({ ...rData, chain: false, skipped: false });
             });
-
-            // --- AUTO-INIT PLAYHEAD ---
+            
             if (displayList.length > 0) {
-                // Move playhead to start of first song on first load
                 wwr_req("SET/POS/" + displayList[0].start);
             }
-            
             initialized = true;
         } 
-        // 3. SUBSEQUENT UPDATES: Update existing DisplayList in place
         else {
             let activeIDs = new Set();
-            
-            // Update Existing Items
             displayList.forEach(item => {
                 if (reaperMap.has(item.id)) {
                     let rData = reaperMap.get(item.id);
@@ -532,22 +403,16 @@
                     reaperMap.delete(item.id);
                 }
             });
-
-            // Filter dead items
             displayList = displayList.filter(item => activeIDs.has(item.id) || reaperMap.has(item.id));
-
-            // Append New Items
             let newItems = Array.from(reaperMap.values()).sort((a,b) => a.start - b.start);
             newItems.forEach(rData => {
-                displayList.push({ ...rData, chain: false });
+                displayList.push({ ...rData, chain: false, skipped: false });
             });
         }
 
-        // 4. Save Logic (Auto-Save current state)
         saveCurrentState();
         
-        // 5. Render Check
-        let currentChecksum = JSON.stringify(displayList.map(r => ({ id: r.id, chain: r.chain, name: r.name })));
+        let currentChecksum = JSON.stringify(displayList.map(r => ({ id: r.id, chain: r.chain, skipped: r.skipped, name: r.name })));
         if (currentChecksum !== lastRenderChecksum) {
             lastRenderChecksum = currentChecksum;
             renderSetlist();
@@ -556,7 +421,7 @@
     }
 
     function saveCurrentState() {
-        let storageFormat = displayList.map(r => ({ id: r.id, chain: r.chain }));
+        let storageFormat = displayList.map(r => ({ id: r.id, chain: r.chain, skipped: r.skipped }));
         setlists[currentSetlistName] = storageFormat;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(setlists));
         localStorage.setItem(CURRENT_KEY, currentSetlistName);
@@ -574,16 +439,19 @@
         const scrollPos = listEl.scrollTop;
         listEl.innerHTML = "";
         
-        displayList.forEach((r) => {
+        displayList.forEach((r, index) => {
             let li = document.createElement("li");
-            li.className = "region-item";
+            li.className = "region-item" + (r.skipped ? " skipped" : "");
             li.id = "row-" + r.id;
             li.setAttribute("data-id", r.id);
             li.setAttribute("data-chain", r.chain); 
+            li.setAttribute("data-skipped", r.skipped);
             
             let chainIcon = r.chain ? "&#10140;" : "&#9632;";
             let chainClass = r.chain ? "chain-btn linked" : "chain-btn";
-            let tooltip = r.chain ? "Follow Action: ACTIVE (Plays Next)" : "Follow Action: STOP";
+            
+            let skipIcon = r.skipped ? "&#10004;" : "&#10006;";
+            let skipClass = r.skipped ? "skip-btn skipped" : "skip-btn";
             
             li.innerHTML = `
                 <div class="region-index"></div>
@@ -596,7 +464,10 @@
                     <div class="progress-bg"><div class="progress-fill" id="prog-${r.id}"></div></div>
                 </div>
                 <div class="song-actions">
-                    <button class="${chainClass}" onclick="toggleChain('${r.id}')" title="${tooltip}">${chainIcon}</button>
+                    <div class="btn-row-group">
+                        <button class="${chainClass}" onclick="toggleChain('${r.id}')" title="Follow Action">${chainIcon}</button>
+                        <button class="${skipClass}" onclick="toggleSkip('${r.id}')" title="Skip Song">${skipIcon}</button>
+                    </div>
                     <button class="load-btn" onclick="playRegion(${r.start}, ${r.id})">PLAY NEXT</button>
                 </div>
             `;
@@ -617,6 +488,30 @@
         }
     }
 
+    function toggleSkip(id) {
+        let item = displayList.find(r => r.id == id);
+        if (item) {
+            item.skipped = !item.skipped;
+            saveCurrentState();
+            lastRenderChecksum = ""; 
+            syncRegions();
+        }
+    }
+
+    function findNextValidSong(startIndex) {
+        for (let i = startIndex + 1; i < displayList.length; i++) {
+            if (!displayList[i].skipped) return displayList[i];
+        }
+        return null;
+    }
+    
+    function findPrevValidSong(startIndex) {
+        for (let i = startIndex - 1; i >= 0; i--) {
+            if (!displayList[i].skipped) return displayList[i];
+        }
+        return null;
+    }
+
     // --- 7. PLAYBACK ---
     function updatePlaybackUI() {
         if (isDragging) return;
@@ -629,6 +524,15 @@
         let activeRegion = displayList[activeIdx];
 
         if (activeRegion) {
+            // Guard: Automatically jump if inside a skipped region
+            if (activeRegion.skipped) {
+                let next = findNextValidSong(activeIdx);
+                if (next) {
+                    wwr_req("SET/POS/" + next.start);
+                    return; 
+                }
+            }
+
             let row = document.getElementById("row-" + activeRegion.id);
             if (row) {
                 row.classList.add('active');
@@ -643,24 +547,39 @@
                 if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + "%";
             }
 
-            // Playback Logic
+            // End of Song Logic
             let timeRemaining = activeRegion.end - currentPos;
             if (timeRemaining <= 0.2 && timeRemaining > -1 && isPlaying) {
+                // 1. Queue Override
                 if (queuedRegion) {
                     wwr_req("SET/POS/" + queuedRegion.start);
                     queuedRegion = null;
                     document.querySelectorAll('.region-item').forEach(el => el.classList.remove('queued'));
                     return;
                 } 
-                if (activeRegion.chain) {
-                    let nextRegion = displayList[activeIdx + 1];
+                
+                // 2. Play Next Logic (Follow Mode OR Auto-Stop OFF)
+                let shouldPlayNext = false;
+                if (activeRegion.chain) shouldPlayNext = true;
+                else if (!document.getElementById('autoStopToggle').checked) shouldPlayNext = true;
+
+                if (shouldPlayNext) {
+                    let nextRegion = findNextValidSong(activeIdx);
                     if (nextRegion) {
                         wwr_req("SET/POS/" + nextRegion.start);
                         return;
                     }
                 }
-                if (document.getElementById('autoStopToggle').checked) {
-                    wwr_req(1016); 
+
+                // 3. Auto-Stop Logic (Stop AND Cue Next)
+                if (document.getElementById('autoStopToggle').checked && !activeRegion.chain) {
+                    wwr_req(1016); // STOP
+                    let nextRegion = findNextValidSong(activeIdx);
+                    if (nextRegion) {
+                        setTimeout(() => {
+                            wwr_req("SET/POS/" + nextRegion.start);
+                        }, 100);
+                    }
                 }
             }
         }
@@ -670,7 +589,7 @@
         const queueMode = document.getElementById('queueModeToggle').checked;
         if (!isPlaying || !queueMode) {
             wwr_req("SET/POS/" + start);
-            wwr_req(1007); 
+            wwr_req(1007); // FIXED: Force Play (1007)
             queuedRegion = null;
             document.querySelectorAll('.region-item').forEach(el => el.classList.remove('queued'));
         } else {
@@ -678,6 +597,34 @@
             document.querySelectorAll('.region-item').forEach(el => el.classList.remove('queued'));
             let row = document.getElementById("row-" + id);
             if (row) row.classList.add('queued');
+        }
+    }
+    
+    function cueRegion(start, id) {
+        wwr_req(1016); // STOP
+        wwr_req("SET/POS/" + start); // Jump
+        flashRow(id);
+    }
+    
+    function smartStop() {
+        // Calculate reset position BEFORE stopping
+        let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
+        let targetPos = null;
+        
+        if (activeIdx !== -1) {
+            targetPos = displayList[activeIdx].start;
+        } else if (displayList.length > 0) {
+            // Fallback to first if stopped in no-man's land
+            targetPos = displayList[0].start; 
+        }
+        
+        wwr_req(1016); // Stop
+        
+        if (targetPos !== null) {
+            // Increased delay slightly to be safe
+            setTimeout(() => {
+                wwr_req("SET/POS/" + targetPos);
+            }, 150);
         }
     }
 
@@ -697,11 +644,10 @@
     function createSetlist() {
         let name = prompt("Name for new setlist?");
         if (name && !setlists[name]) {
-            setlists[name] = displayList.map(r => ({ id: r.id, chain: r.chain }));
+            setlists[name] = displayList.map(r => ({ id: r.id, chain: r.chain, skipped: r.skipped }));
             currentSetlistName = name;
             saveCurrentState();
             updateSetlistDropdown();
-            // Force re-init on setlist change
             displayList = []; 
             initialized = false;
             syncRegions();
@@ -724,7 +670,7 @@
     function changeSetlist() {
         currentSetlistName = document.getElementById("setlistSelect").value;
         localStorage.setItem(CURRENT_KEY, currentSetlistName);
-        displayList = []; // Clear display to force rebuild from new setlist
+        displayList = []; 
         initialized = false;
         syncRegions();
     }
@@ -751,12 +697,11 @@
             try {
                 let importedData = JSON.parse(e.target.result);
                 if (importedData && typeof importedData === 'object' && importedData["Default"]) {
-                    if(confirm("Overwrite all local setlists with this file?")) {
+                    if(confirm("Overwrite all local setlists?")) {
                         setlists = importedData;
                         if (!setlists[currentSetlistName]) currentSetlistName = "Default";
                         saveSetlistsToStorage(); 
                         updateSetlistDropdown();
-                        // Reset View
                         displayList = [];
                         initialized = false;
                         syncRegions();
@@ -778,7 +723,7 @@
         localStorage.setItem(CURRENT_KEY, currentSetlistName);
     }
 
-    // --- 9. DRAG & DROP (Visual Master) ---
+    // --- 9. DRAG & DROP ---
     new Sortable(document.getElementById('setlist'), {
         animation: 150,
         handle: '.drag-handle',
@@ -786,42 +731,34 @@
             isDragging = true;
         },
         onEnd: function (evt) {
-            // 1. Scrape DOM
             let items = document.querySelectorAll("#setlist .region-item");
             let newOrder = [];
             let sortedDisplay = [];
 
             items.forEach(el => {
                 let id = el.getAttribute("data-id");
-                // Find existing data to keep properties intact
                 let existing = displayList.find(r => r.id == id);
                 if (existing) {
-                    newOrder.push({ id: id, chain: existing.chain });
+                    newOrder.push({ id: id, chain: existing.chain, skipped: existing.skipped });
                     sortedDisplay.push(existing);
                 }
             });
 
-            // 2. Commit Order to Storage
             setlists[currentSetlistName] = newOrder;
             saveCurrentState();
-            
-            // 3. Update Visual Authority (Internal Array)
             displayList = sortedDisplay;
+            lastRenderChecksum = JSON.stringify(displayList.map(r => ({ id: r.id, chain: r.chain, skipped: r.skipped, name: r.name })));
             
-            // 4. Update Checksum
-            lastRenderChecksum = JSON.stringify(displayList.map(r => ({ id: r.id, chain: r.chain, name: r.name })));
-            
-            // 5. Resume (Short delay to clear events)
             setTimeout(() => { isDragging = false; }, 200);
         }
     });
 
-    // --- 10. KEYBOARD CONTROLS (CUSTOM MAP) ---
+    // --- 10. KEYBOARD CONTROLS ---
     document.addEventListener('keydown', function(event) {
         
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
 
-        // SPACE: Toggle Play/Pause (Smart Start)
+        // SPACE: Toggle Play/Pause
         if (event.code === 'Space') {
             event.preventDefault(); 
             if (isPlaying) {
@@ -835,50 +772,46 @@
             }
         }
 
-        // ENTER: PANIC STOP
+        // ENTER: Smart Stop
         if (event.code === 'Enter') {
             event.preventDefault();
-            wwr_req(1016); // Stop Immediately
-            // Move playhead to start of current song
-            if (activeIdx !== -1) {
-                wwr_req("SET/POS/" + displayList[activeIdx].start);
-            }
+            smartStop();
         }
         
-        // LEFT ARROW: RESTART CURRENT
+        // LEFT: Restart
         if (event.code === 'ArrowLeft') {
             event.preventDefault();
             if (activeIdx !== -1) {
-                // If active, restart
                 playRegion(displayList[activeIdx].start, displayList[activeIdx].id);
                 flashRow(displayList[activeIdx].id);
             }
         }
 
-        // RIGHT ARROW: NEXT SONG
+        // RIGHT: Next (Cue)
         if (event.code === 'ArrowRight') {
             event.preventDefault();
             let targetItem;
-            if (activeIdx === -1) targetItem = displayList[0];
-            else if (activeIdx + 1 < displayList.length) targetItem = displayList[activeIdx + 1];
+            if (activeIdx === -1) {
+                targetItem = displayList[0];
+            } else {
+                targetItem = findNextValidSong(activeIdx);
+            }
 
             if (targetItem) {
-                playRegion(targetItem.start, targetItem.id);
-                flashRow(targetItem.id);
+                cueRegion(targetItem.start, targetItem.id);
             }
         }
 
-        // UP ARROW: PREVIOUS SONG
+        // UP: Prev (Cue)
         if (event.code === 'ArrowUp') {
             event.preventDefault();
             if (activeIdx > 0) {
-                let targetItem = displayList[activeIdx - 1];
-                playRegion(targetItem.start, targetItem.id);
-                flashRow(targetItem.id);
+                let targetItem = findPrevValidSong(activeIdx);
+                if (targetItem) cueRegion(targetItem.start, targetItem.id);
             }
         }
 
-        // DOWN ARROW: START OF SET (Song 1)
+        // DOWN: Reset
         if (event.code === 'ArrowDown') {
             event.preventDefault();
             if (displayList.length > 0) {
@@ -888,7 +821,6 @@
         }
     });
 
-    // Helper for key feedback
     function flashRow(id) {
         let btn = document.querySelector(`#row-${id} .load-btn`);
         if(btn) {
