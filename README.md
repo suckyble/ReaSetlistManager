@@ -18,7 +18,7 @@ This web app reads your Reaper project's **Regions** as songs, allowing you to d
     * **Auto-Stop:** Automatically stop playback at the end of a song.
     * **Follow Actions (Chaining):** Link specific songs together to play continuously (overriding Auto-Stop), allowing for custom mini-sets or medleys.
     * **Skip / Disable Songs:** Mark specific songs to be skipped. Playback will automatically jump over them to the next active song.
-* **Visual Feedback:** Large progress bars and active song highlighting.
+* **Visual Feedback:** Large progress bars and active song highlighting, remaining time of current song displayed.
 * **Data Persistence:** All setlists and settings are saved automatically to your browser's Local Storage.
 * **Backup:** Export and Import your setlist data via JSON files.
 * **Touch Optimized:** Designed with large tap targets for iPads/Android tablets.
@@ -88,7 +88,7 @@ This app is can also work with **Bluetooth Page Turners** (AirTurn/PageFlip) and
 | **Right ➡** | **Play Next** | Cues the **Next** song (stops and jumps to start). Automatically skips disabled tracks. |
 | **Up ⬆** | **Play Previous** | Cues the **Previous** song (stops and jumps to start). Automatically skips disabled tracks. |
 | **Left ⬅** | **Restart Song** | Jumps to the start of the **Current** song and restarts playback immediately. |
-| **Down ⬇** | **Reset Set** | Jumps to the start of **Song #1** (Top of Setlist) and plays. |
+| **Down ⬇** | **Reset Set** | Jumps to the start of **Song #1** (Top of Setlist and cues it for playback). |
 
 ## ⚙️ Technical Details
 
