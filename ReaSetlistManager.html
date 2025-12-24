@@ -195,6 +195,13 @@
         .song-duration { 
             font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
             color: #90a4ae; font-weight: 500; font-size: 0.95em;
+            min-width: 50px; text-align: right;
+        }
+        /* NEW: Active countdown style */
+        .song-duration.live-time {
+            color: #00e676; /* Bright Green */
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
         }
         
         .progress-bg { 
@@ -238,11 +245,8 @@
             background: linear-gradient(135deg, rgba(27, 94, 32, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%);
             color: #a5d6a7; border-color: rgba(76, 175, 80, 0.5);
         }
-        /* CSS MAGIC: Always hide chain button on last item */
-        #setlist .region-item:last-child .chain-btn {
-            visibility: hidden;
-            pointer-events: none;
-        }
+        /* Hide chain on last item */
+        #setlist .region-item:last-child .chain-btn { visibility: hidden; pointer-events: none; }
 
         .skip-btn {
             background: rgba(51, 51, 51, 0.6); color: #78909c;
@@ -453,13 +457,14 @@
             let skipIcon = r.skipped ? "&#10004;" : "&#10006;";
             let skipClass = r.skipped ? "skip-btn skipped" : "skip-btn";
             
+            // Add ID for duration element targetting
             li.innerHTML = `
                 <div class="region-index"></div>
                 <div class="drag-handle">&#9776;</div>
                 <div class="song-info">
                     <div class="song-header">
                         <span class="song-name">${r.name}</span>
-                        <span class="song-duration">${formatTime(r.duration)}</span>
+                        <span class="song-duration" id="dur-${r.id}" data-length="${formatTime(r.duration)}">${formatTime(r.duration)}</span>
                     </div>
                     <div class="progress-bg"><div class="progress-fill" id="prog-${r.id}"></div></div>
                 </div>
@@ -523,8 +528,16 @@
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
         let activeRegion = displayList[activeIdx];
 
+        // --- NEW: Reset time display for previously active ---
+        if (lastActiveID && (!activeRegion || activeRegion.id !== lastActiveID)) {
+            let oldDur = document.getElementById("dur-" + lastActiveID);
+            if (oldDur) {
+                oldDur.innerText = oldDur.getAttribute("data-length");
+                oldDur.classList.remove("live-time");
+            }
+        }
+
         if (activeRegion) {
-            // Guard: Automatically jump if inside a skipped region
             if (activeRegion.skipped) {
                 let next = findNextValidSong(activeIdx);
                 if (next) {
@@ -545,12 +558,19 @@
                 let percent = ((currentPos - activeRegion.start) / activeRegion.duration) * 100;
                 let bar = document.getElementById("prog-" + activeRegion.id);
                 if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + "%";
+                
+                // --- NEW: Update countdown ---
+                let durEl = document.getElementById("dur-" + activeRegion.id);
+                if (durEl) {
+                    let remaining = activeRegion.end - currentPos;
+                    if (remaining < 0) remaining = 0;
+                    durEl.innerText = "-" + formatTime(remaining);
+                    durEl.classList.add("live-time");
+                }
             }
 
-            // End of Song Logic
             let timeRemaining = activeRegion.end - currentPos;
             if (timeRemaining <= 0.2 && timeRemaining > -1 && isPlaying) {
-                // 1. Queue Override
                 if (queuedRegion) {
                     wwr_req("SET/POS/" + queuedRegion.start);
                     queuedRegion = null;
@@ -558,7 +578,6 @@
                     return;
                 } 
                 
-                // 2. Play Next Logic (Follow Mode OR Auto-Stop OFF)
                 let shouldPlayNext = false;
                 if (activeRegion.chain) shouldPlayNext = true;
                 else if (!document.getElementById('autoStopToggle').checked) shouldPlayNext = true;
@@ -571,9 +590,8 @@
                     }
                 }
 
-                // 3. Auto-Stop Logic (Stop AND Cue Next)
                 if (document.getElementById('autoStopToggle').checked && !activeRegion.chain) {
-                    wwr_req(1016); // STOP
+                    wwr_req(1016); 
                     let nextRegion = findNextValidSong(activeIdx);
                     if (nextRegion) {
                         setTimeout(() => {
@@ -589,7 +607,7 @@
         const queueMode = document.getElementById('queueModeToggle').checked;
         if (!isPlaying || !queueMode) {
             wwr_req("SET/POS/" + start);
-            wwr_req(1007); // FIXED: Force Play (1007)
+            wwr_req(1007); // Fixed: Force Play (1007)
             queuedRegion = null;
             document.querySelectorAll('.region-item').forEach(el => el.classList.remove('queued'));
         } else {
@@ -607,24 +625,20 @@
     }
     
     function smartStop() {
-        // Calculate reset position BEFORE stopping
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
         let targetPos = null;
-        
         if (activeIdx !== -1) {
             targetPos = displayList[activeIdx].start;
         } else if (displayList.length > 0) {
-            // Fallback to first if stopped in no-man's land
             targetPos = displayList[0].start; 
         }
         
         wwr_req(1016); // Stop
         
         if (targetPos !== null) {
-            // Increased delay slightly to be safe
             setTimeout(() => {
                 wwr_req("SET/POS/" + targetPos);
-            }, 150);
+            }, 150); // Increased delay slightly
         }
     }
 
@@ -762,12 +776,12 @@
         if (event.code === 'Space') {
             event.preventDefault(); 
             if (isPlaying) {
-                wwr_req(1008); // Pause
+                wwr_req(1008); // PAUSE
             } else {
                 if (activeIdx === -1 && displayList.length > 0) {
                     playRegion(displayList[0].start, displayList[0].id);
                 } else {
-                    wwr_req(1007); // Play
+                    wwr_req(1007); // PLAY
                 }
             }
         }
@@ -792,7 +806,7 @@
             event.preventDefault();
             let targetItem;
             if (activeIdx === -1) {
-                targetItem = displayList[0];
+                targetItem = displayList.find(r => !r.skipped);
             } else {
                 targetItem = findNextValidSong(activeIdx);
             }
@@ -811,11 +825,11 @@
             }
         }
 
-        // DOWN: Reset
+        // DOWN: Reset (Cue)
         if (event.code === 'ArrowDown') {
             event.preventDefault();
             if (displayList.length > 0) {
-                playRegion(displayList[0].start, displayList[0].id);
+                cueRegion(displayList[0].start, displayList[0].id);
                 flashRow(displayList[0].id);
             }
         }
