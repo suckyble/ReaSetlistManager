@@ -28,7 +28,7 @@ This web app reads your Reaper project's **Regions** as songs, allowing you to d
 For stability on stage, this tool does **not** require an internet connection. You must save the library file locally.
 
 ### 1. Download Files
-1.  Save the `index.html` code provided into a file named **`index.html`**.
+1.  Save the `ReaSetlistManager.html` code provided into a file named **`ReaSetlistManager.html`**.
 2.  Download the **SortableJS** library:
     * [Click here to open Sortable.min.js](https://raw.githubusercontent.com/SortableJS/Sortable/master/Sortable.min.js)
     * Right-click the page and select **"Save Page As..."**
@@ -38,14 +38,13 @@ For stability on stage, this tool does **not** require an internet connection. Y
 1.  Open Reaper.
 2.  Go to **Options** > **Show REAPER resource path in explorer/finder**.
 3.  Open the folder `UserPlugins` > `reaper_www_root`.
-4.  Create a new folder named `setlist`.
-5.  **Copy both `index.html` and `Sortable.min.js` into this `setlist` folder.**
+4.  **Copy both `ReaSetlistmanager.html` and `Sortable.min.js` into this folder.**
 
 ### 3. Configure Reaper
 1.  Go to **Preferences** > **Control/OSC/Web**.
 2.  Click **Add**.
 3.  **Control surface mode:** `Web Browser Interface`.
-4.  **Default Interface:** `setlist/index.html`.
+4.  **Default Interface:** `ReaSetlistManager`.
 5.  **Access URL:** Note the address provided (e.g., `http://localhost:8080`).
 6.  Click **OK**.
 
@@ -62,7 +61,7 @@ This tool reads **Regions**, not tracks or markers.
 Open the Access URL on your tablet or browser.
 
 #### Transport Controls
-* **PLAY / STOP:** Standard transport controls.
+* **PLAY / STOP:** Standard transport controls. Play pauses the song if a song is currently playing.
 * **RESYNC (↻):** If the connection drops or the tablet wakes from sleep, click this to restart the data stream without reloading the page.
 
 
@@ -81,7 +80,7 @@ Open the Access URL on your tablet or browser.
 * **PLAY NEXT:** Queues or plays the specific song.
 
 ### 3. Managing Setlists
-* **Dropdown:** Select different saved setlists.
+* **Dropdown:** Select different saved setlists. Setlists are instantly saved so create a new setlist first and then set up the songs
 * **(+) Button:** Create a new setlist (clones the current order).
 * **(x) Button:** Delete the current setlist.
 * **(↓) Export:** Download a `.json` backup of all your setlists and settings.
