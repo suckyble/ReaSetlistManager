@@ -389,7 +389,8 @@
                 displayList.push({ ...rData, chain: false, skipped: false });
             });
             
-            if (displayList.length > 0) {
+            // Auto-Init: Jump to start only if NOT playing
+            if (displayList.length > 0 && !isPlaying) {
                 wwr_req("SET/POS/" + displayList[0].start);
             }
             initialized = true;
@@ -643,19 +644,16 @@
         }
     }
     
-    // NEW: Unified Play/Pause toggle for GUI and Spacebar
+    // Unified Toggle
     function togglePlay() {
         if (isPlaying) {
             wwr_req(1008); // PAUSE
         } else {
-            // Smart Start Logic
             let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
             
             if (activeIdx === -1 && displayList.length > 0) {
-                // Not playing a song? Start from #1
                 playRegion(displayList[0].start, displayList[0].id);
             } else {
-                // Else, resume normally
                 wwr_req(1007); // PLAY
             }
         }
@@ -791,7 +789,7 @@
         
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
 
-        // SPACE: Toggle Play/Pause via helper
+        // SPACE: Toggle Play/Pause
         if (event.code === 'Space') {
             event.preventDefault(); 
             togglePlay();
