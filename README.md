@@ -11,33 +11,43 @@ This web app reads your Reaper project's **Regions** as songs, allowing you to d
 ## 🌟 Key Features
 
 * **Live Region Sync:** Automatically pulls song names and durations from your Reaper project regions.
-* **Drag & Drop Sorting:** Visually reorder your setlist on the fly. The order is saved instantly.
+* **Drag & Drop Sorting:** Visually reorder your setlist on the fly. The order is saved instantly to your device.
 * **Setlist Management:** Create, rename, and delete multiple setlists (e.g., "Rehearsal", "Friday Gig").
-* **Playback Logic:**
+* **Smart Playback Logic:**
     * **Queue Mode:** Queue the next song to start seamlessly when the current one finishes.
     * **Auto-Stop:** Automatically stop playback at the end of a song.
     * **Follow Actions (Chaining):** Link specific songs together to play continuously (overriding Auto-Stop), allowing for custom mini-sets or medleys.
     * **Skip / Disable Songs:** Mark specific songs to be skipped. Playback will automatically jump over them to the next active song.
-* **Visual Feedback:** Large progress bars and active song highlighting, remaining time of current song displayed.
-* **Data Persistence:** All setlists and settings are saved automatically to your browser's Local Storage.
+* **Live Time Display:** Shows total song duration when stopped, and switches to a high-visibility **Countdown Timer** during playback.
+* **Keyboard & Footswitch Support:** Map pedals or keys to trigger playback, navigation, and panic stops.
 * **Backup:** Export and Import your setlist data via JSON files.
 * **Touch Optimized:** Designed with large tap targets for iPads/Android tablets.
 
-## 🛠️ Installation
+## 🛠️ Installation (Offline Ready)
 
-1.  **Locate Reaper's Web Root:**
-    * Open Reaper.
-    * Go to **Options** > **Show REAPER resource path in explorer/finder**.
-    * Open the folder `UserPlugins` > `reaper_www_root`.
-2.  **Install File:**
-    * Place the `ReaSetlistManager.html` file into this folder.
-3.  **Configure Reaper:**
-    * Go to **Preferences** > **Control/OSC/Web**.
-    * Click **Add**.
-    * **Control surface mode:** `Web Browser Interface`.
-    * **Default Interface:** `ReaSetlistManager.html`.
-    * **Access URL:** Note the address provided (usually `http://localhost:8080`).
-    * Click **OK**.
+For stability on stage, this tool does **not** require an internet connection. You must save the library file locally.
+
+### 1. Download Files
+1.  Save the `index.html` code provided into a file named **`index.html`**.
+2.  Download the **SortableJS** library:
+    * [Click here to open Sortable.min.js](https://raw.githubusercontent.com/SortableJS/Sortable/master/Sortable.min.js)
+    * Right-click the page and select **"Save Page As..."**
+    * Name it **`Sortable.min.js`**.
+
+### 2. Place in Reaper Web Root
+1.  Open Reaper.
+2.  Go to **Options** > **Show REAPER resource path in explorer/finder**.
+3.  Open the folder `UserPlugins` > `reaper_www_root`.
+4.  Create a new folder named `setlist`.
+5.  **Copy both `index.html` and `Sortable.min.js` into this `setlist` folder.**
+
+### 3. Configure Reaper
+1.  Go to **Preferences** > **Control/OSC/Web**.
+2.  Click **Add**.
+3.  **Control surface mode:** `Web Browser Interface`.
+4.  **Default Interface:** `setlist/index.html`.
+5.  **Access URL:** Note the address provided (e.g., `http://localhost:8080`).
+6.  Click **OK**.
 
 ## 🚀 How to Use
 
@@ -92,7 +102,6 @@ This app is can also work with **Bluetooth Page Turners** (AirTurn/PageFlip) and
 
 ## ⚙️ Technical Details
 
-* **Dependencies:** Uses `main.js` (provided virtually by Reaper) and `SortableJS` (loaded via CDN).
 * **Sync Logic:** The app prioritizes the visual order on your screen ("Visual Master"). It only polls Reaper to update song durations and playhead positions, ensuring drag-and-drop operations are never interrupted by network latency.
 
 ## 📄 License
