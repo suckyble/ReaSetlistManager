@@ -5,7 +5,7 @@
     <title>ReaSetlistManager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="main.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="Sortable.min.js"></script>
     
     <style>
         /* --- GLOBAL & THEME --- */
@@ -197,9 +197,9 @@
             color: #90a4ae; font-weight: 500; font-size: 0.95em;
             min-width: 50px; text-align: right;
         }
-        /* NEW: Active countdown style */
+        /* Active countdown style */
         .song-duration.live-time {
-            color: #00e676; /* Bright Green */
+            color: #00e676; 
             font-weight: 800;
             text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
         }
@@ -280,7 +280,7 @@
     </div>
 
     <div class="transport-row">
-        <button class="btn-transport btn-play" onclick="wwr_req(1007)">&#9654; PLAY</button>
+        <button class="btn-transport btn-play" onclick="togglePlay()">&#9654; PLAY</button>
         <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
         <button class="btn-transport btn-refresh" onclick="wwr_start()">&#8635; RESYNC</button>
     </div>
@@ -528,7 +528,7 @@
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
         let activeRegion = displayList[activeIdx];
 
-        // --- NEW: Reset time display for previously active ---
+        // Reset time display
         if (lastActiveID && (!activeRegion || activeRegion.id !== lastActiveID)) {
             let oldDur = document.getElementById("dur-" + lastActiveID);
             if (oldDur) {
@@ -559,7 +559,7 @@
                 let bar = document.getElementById("prog-" + activeRegion.id);
                 if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + "%";
                 
-                // --- NEW: Update countdown ---
+                // Countdown
                 let durEl = document.getElementById("dur-" + activeRegion.id);
                 if (durEl) {
                     let remaining = activeRegion.end - currentPos;
@@ -607,7 +607,7 @@
         const queueMode = document.getElementById('queueModeToggle').checked;
         if (!isPlaying || !queueMode) {
             wwr_req("SET/POS/" + start);
-            wwr_req(1007); // Fixed: Force Play (1007)
+            wwr_req(1007); // FORCE PLAY
             queuedRegion = null;
             document.querySelectorAll('.region-item').forEach(el => el.classList.remove('queued'));
         } else {
@@ -627,6 +627,7 @@
     function smartStop() {
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
         let targetPos = null;
+        
         if (activeIdx !== -1) {
             targetPos = displayList[activeIdx].start;
         } else if (displayList.length > 0) {
@@ -638,7 +639,25 @@
         if (targetPos !== null) {
             setTimeout(() => {
                 wwr_req("SET/POS/" + targetPos);
-            }, 150); // Increased delay slightly
+            }, 150);
+        }
+    }
+    
+    // NEW: Unified Play/Pause toggle for GUI and Spacebar
+    function togglePlay() {
+        if (isPlaying) {
+            wwr_req(1008); // PAUSE
+        } else {
+            // Smart Start Logic
+            let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
+            
+            if (activeIdx === -1 && displayList.length > 0) {
+                // Not playing a song? Start from #1
+                playRegion(displayList[0].start, displayList[0].id);
+            } else {
+                // Else, resume normally
+                wwr_req(1007); // PLAY
+            }
         }
     }
 
@@ -772,18 +791,10 @@
         
         let activeIdx = displayList.findIndex(r => currentPos >= r.start && currentPos <= r.end);
 
-        // SPACE: Toggle Play/Pause
+        // SPACE: Toggle Play/Pause via helper
         if (event.code === 'Space') {
             event.preventDefault(); 
-            if (isPlaying) {
-                wwr_req(1008); // PAUSE
-            } else {
-                if (activeIdx === -1 && displayList.length > 0) {
-                    playRegion(displayList[0].start, displayList[0].id);
-                } else {
-                    wwr_req(1007); // PLAY
-                }
-            }
+            togglePlay();
         }
 
         // ENTER: Smart Stop
@@ -806,7 +817,7 @@
             event.preventDefault();
             let targetItem;
             if (activeIdx === -1) {
-                targetItem = displayList.find(r => !r.skipped);
+                targetItem = displayList[0];
             } else {
                 targetItem = findNextValidSong(activeIdx);
             }
@@ -825,12 +836,11 @@
             }
         }
 
-        // DOWN: Reset (Cue)
+        // DOWN: Reset
         if (event.code === 'ArrowDown') {
             event.preventDefault();
             if (displayList.length > 0) {
                 cueRegion(displayList[0].start, displayList[0].id);
-                flashRow(displayList[0].id);
             }
         }
     });
