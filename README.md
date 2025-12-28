@@ -23,6 +23,7 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
 * **Keyboard & Footswitch Support:** Map pedals or keys to trigger playback, navigation, and panic stops.
 * **Backup:** Export and Import your setlist data via JSON files.
 * **Touch Optimized:** Designed with large tap targets for iPads/Android tablets.
+* **Region Color Sync:** Automatically displays the color of your Reaper regions for better visual organization and quick identification.
 
 ## 🛠️ Installation (Offline Ready)
 
