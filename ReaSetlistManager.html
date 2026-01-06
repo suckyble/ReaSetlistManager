@@ -13,176 +13,302 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #eee; margin: 0; padding-bottom: 80px; user-select: none;
+            color: #eee; margin: 0; 
+            /* Increased bottom padding so list clears the new footer */
+            padding-bottom: 100px; 
+            user-select: none; -webkit-user-select: none;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* --- CONTROLS AREA --- */
+        /* --- CONTROLS AREA (TOP) --- */
         .controls { 
             position: sticky; top: 0; z-index: 100; 
             background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            padding: 16px; 
+            padding: 12px; 
             border-bottom: 2px solid #0f3460;
-            display: flex; flex-direction: column; gap: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            display: flex; flex-direction: column; gap: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
+        /* --- TRANSPORT FOOTER (BOTTOM STICKY) --- */
+        .transport-footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(0deg, #1a1a2e 0%, #16213e 100%);
+            padding: 12px;
+            /* Safe area for modern phones without buttons */
+            padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+            border-top: 2px solid #0f3460;
+            z-index: 500;
+            display: flex; gap: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Setlist Manager Row */
         .setlist-row { 
             display: flex; gap: 8px; 
             background: rgba(42, 42, 42, 0.6); 
-            padding: 10px; border-radius: 12px; 
+            padding: 8px; 
+            border-radius: 12px; 
             align-items: center; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             flex-wrap: wrap;
         }
         .setlist-select {
-            flex-grow: 1; padding: 10px 12px; 
-            background: rgba(17, 17, 17, 0.8); color: #fff; 
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; 
-            font-size: 14px; outline: none; min-width: 100px;
+            flex-grow: 1; padding: 10px; 
+            background: rgba(17, 17, 17, 0.8);
+            color: #fff; 
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px; 
+            font-size: 14px; 
+            outline: none; 
+            min-width: 100px;
         }
         .btn-mini {
-            padding: 10px 14px; font-weight: bold; cursor: pointer; 
-            border: 1px solid transparent; background: rgba(51, 51, 51, 0.8);
-            color: #ccc; border-radius: 8px; font-size: 14px;
+            padding: 10px 14px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: 1px solid transparent;
+            background: rgba(51, 51, 51, 0.8);
+            color: #ccc; 
+            border-radius: 8px; 
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .btn-add { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; }
-        .btn-del { background: linear-gradient(135deg, #c62828 0%, #f44336 100%); color: white; }
-        .btn-exp { background: linear-gradient(135deg, #1565C0 0%, #2196F3 100%); color: white; }
-        .btn-imp { background: linear-gradient(135deg, #EF6C00 0%, #FF9800 100%); color: white; }
+        .btn-add { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; border-color: rgba(76, 175, 80, 0.3); }
+        .btn-del { background: linear-gradient(135deg, #c62828 0%, #f44336 100%); color: white; border-color: rgba(244, 67, 54, 0.3); }
+        .btn-exp { background: linear-gradient(135deg, #1565C0 0%, #2196F3 100%); color: white; border-color: rgba(33, 150, 243, 0.3); }
+        .btn-imp { background: linear-gradient(135deg, #EF6C00 0%, #FF9800 100%); color: white; border-color: rgba(255, 152, 0, 0.3); }
 
-        .transport-row { display: flex; gap: 12px; width: 100%; }
+        /* Transport Buttons (Styled for Footer) */
         .btn-transport { 
-            flex: 1; padding: 16px 0; font-size: 16px; font-weight: bold; 
+            flex: 1; padding: 16px 0; font-size: 18px; font-weight: bold; 
             cursor: pointer; border-radius: 10px; border: none; color: white;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            position: relative; overflow: hidden;
         }
+        .btn-transport:active { transform: scale(0.96); }
         .btn-play { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); }
         .btn-stop { background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%); }
         .btn-refresh { background: linear-gradient(135deg, #37474f 0%, #546e7a 100%); }
 
+        /* Toggles Row */
         .toggles-row { 
             display: flex; justify-content: space-around; 
-            background: rgba(37, 37, 37, 0.6); padding: 12px; border-radius: 12px;
+            background: rgba(37, 37, 37, 0.6);
+            padding: 10px; border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .toggle-wrapper { 
-            display: flex; align-items: center; gap: 10px; 
-            font-size: 11px; text-transform: uppercase; color: #aaa; font-weight: 600;
+            display: flex; align-items: center; gap: 8px; 
+            font-size: 11px; text-transform: uppercase; color: #aaa;
+            font-weight: 600; letter-spacing: 0.5px;
         }
         .help-icon {
             display: inline-flex; justify-content: center; align-items: center;
             width: 18px; height: 18px; border-radius: 50%;
-            background: #546e7a; color: #fff; font-weight: bold; font-size: 11px;
-            cursor: pointer; margin-left: 2px;
+            background: linear-gradient(135deg, #37474f 0%, #546e7a 100%);
+            color: #fff; font-weight: bold; font-size: 11px;
+            cursor: pointer; margin-left: 2px; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* Info Row */
         .info-row {
-            display: flex; justify-content: space-between; padding: 12px 16px; 
-            font-size: 16px; color: #90caf9; font-weight: bold; font-family: monospace;
-            background: rgba(0,0,0,0.2); border-radius: 8px;
+            display: flex; justify-content: space-between;
+            padding: 10px 14px; 
+            font-size: 14px; 
+            color: #90caf9;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
         }
 
+        /* Switches */
         .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { 
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
-            background: #455a64; transition: .4s; border-radius: 34px;
+            background: linear-gradient(135deg, #37474f 0%, #455a64 100%);
+            transition: .4s; border-radius: 34px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
         .slider:before { 
             position: absolute; content: ""; height: 16px; width: 16px; 
             left: 3px; bottom: 3px; background-color: white; 
             transition: .4s; border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        input:checked + .slider { background: #2196F3; }
+        input:checked + .slider { background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%); }
         input:checked + .slider:before { transform: translateX(18px); }
 
         /* --- SETLIST LIST --- */
         #setlist { 
             list-style: none; padding: 16px; margin: 0; 
             counter-reset: song-counter; 
-            overflow-y: auto; -webkit-overflow-scrolling: touch; 
+            touch-action: pan-y;
         }
         .region-item { 
             background: linear-gradient(135deg, rgba(37, 37, 37, 0.8) 0%, rgba(30, 30, 40, 0.8) 100%);
             margin-bottom: 12px; padding: 14px; border-radius: 12px;
             display: flex; align-items: center; gap: 12px; 
-            border-left: 4px solid #37474f; counter-increment: song-counter; 
+            border-left: 4px solid #37474f;
+            counter-increment: song-counter; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .region-item.active { 
-            background: rgba(46, 125, 50, 0.3); border-left-color: #00e676;
+            background: linear-gradient(135deg, rgba(27, 94, 32, 0.3) 0%, rgba(46, 125, 50, 0.2) 100%);
+            border-left-color: #00e676;
+            box-shadow: 0 6px 24px rgba(0, 230, 118, 0.3);
         }
         .region-item.queued { 
-            border-left-color: #ffd54f; background: rgba(255, 213, 79, 0.15);
+            border-left-color: #ffd54f; 
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 213, 79, 0.1) 100%);
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 6px 24px rgba(255, 213, 79, 0.3);
         }
         .region-item.skipped {
-            opacity: 0.4; border-left-color: #444; background: #1a1a1a;
+            opacity: 0.4;
+            border-left-color: #444;
+            background: #1a1a1a;
+            filter: grayscale(100%);
         }
         
-        /* --- DRAG & DROP OPTIMIZED --- */
-        /* REMOVED Opacity change to save CPU */
+        /* --- DRAG VISUALS --- */
         .sortable-fallback { 
-            background: #222 !important; 
-            box-shadow: none !important; 
-            transform: translateZ(0); 
-            pointer-events: none !important; 
-            z-index: 99999; 
-            border: 2px solid #00e676; 
-            border-radius: 12px; 
-            transition: none !important;
+            opacity: 0.9 !important; 
+            background: #2a2a2a; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 99999;
+            border-radius: 12px;
         }
         .sortable-ghost { 
-            opacity: 0.3 !important; background: #eee !important; border: 2px dashed #999 !important; 
+            opacity: 0.4 !important; 
+            background: rgba(255,255,255,0.05) !important;
+            border: 2px dashed #666 !important; 
         }
-
+        
         .region-index {
             font-size: 20px; font-weight: 800; color: #546e7a; 
-            min-width: 36px; text-align: center; padding: 4px 0; border-radius: 8px;
+            min-width: 36px; text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            padding: 4px 0; border-radius: 8px;
         }
         .region-index::before { content: counter(song-counter); }
-        .region-index.colored { color: #fff; }
+        .region-index.colored {
+            color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
 
         .drag-handle { 
-            font-size: 24px; color: #607d8b; padding: 5px; 
-            cursor: grab; line-height: 1; touch-action: none; 
+            font-size: 24px; color: #607d8b; padding: 15px; 
+            cursor: grab; line-height: 1; 
+            touch-action: none; 
+            -webkit-user-select: none; user-select: none;
         }
+        .drag-handle:active { cursor: grabbing; color: #90caf9; }
         
         .song-info { flex-grow: 1; min-width: 0; }
         .song-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: baseline; }
-        .song-name { font-weight: 600; color: #fff; font-size: 1.1em; }
+        .song-name { 
+            font-weight: 600; color: #fff; font-size: 1.1em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
         .song-duration { 
-            font-family: monospace; color: #90a4ae; font-weight: 500; font-size: 0.95em;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            color: #90a4ae; font-weight: 500; font-size: 0.95em;
             min-width: 50px; text-align: right;
         }
-        .song-duration.live-time { color: #00e676; font-weight: 800; }
+        .song-duration.live-time {
+            color: #00e676; 
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
+        }
         
         .progress-bg { 
-            background: rgba(17, 17, 17, 0.6); height: 6px; width: 100%; border-radius: 10px; overflow: hidden; 
+            background: rgba(17, 17, 17, 0.6);
+            height: 6px; width: 100%; border-radius: 10px; 
+            overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
-        .progress-fill { background: #00e676; height: 100%; width: 0%; }
+        .progress-fill { 
+            background: linear-gradient(90deg, #00e676 0%, #00c853 100%);
+            height: 100%; width: 0%; transition: width 0.1s linear;
+            box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+        }
         
         .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
         .btn-row-group { display: flex; gap: 6px; width: 100%; }
 
         .load-btn { 
-            background: rgba(33, 150, 243, 0.2); color: #64b5f6; 
-            border: 1px solid rgba(33, 150, 243, 0.5); border-radius: 8px; 
-            padding: 8px 14px; font-size: 12px; font-weight: bold; width: 100%;
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.2) 0%, rgba(33, 150, 243, 0.1) 100%);
+            color: #64b5f6; border: 1px solid rgba(33, 150, 243, 0.5);
+            border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: bold;
+            white-space: nowrap; cursor: pointer; width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .chain-btn, .skip-btn {
+        .load-btn:active { 
+            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
+            color: white; transform: translateY(0);
+        }
+
+        /* --- ACTION BUTTONS (Chain, Loop, Skip) --- */
+        .chain-btn, .skip-btn, .loop-btn {
             background: rgba(51, 51, 51, 0.6); color: #78909c;
             border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; 
-            padding: 6px; width: 50%; text-align: center;
+            padding: 6px; width: 33%; 
+            text-align: center; cursor: pointer;
+            font-weight: bold;
         }
-        .chain-btn.linked { background: #2e7d32; color: #a5d6a7; }
-        .skip-btn.skipped { background: #c62828; color: #ef9a9a; }
-        #setlist .region-item:last-child .chain-btn { visibility: hidden; }
+        
+        /* Chain (Green) */
+        .chain-btn.linked { 
+            background: linear-gradient(135deg, rgba(27, 94, 32, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%);
+            color: #a5d6a7; border-color: rgba(76, 175, 80, 0.5);
+        }
+        
+        /* Loop (Purple) */
+        .loop-btn.looping {
+            background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+            color: #e1bee7; border-color: #ab47bc;
+        }
 
+        /* Skip (Red) */
+        .skip-btn.skipped { 
+            background: linear-gradient(135deg, rgba(183, 28, 28, 0.8) 0%, rgba(211, 47, 47, 0.8) 100%);
+            color: #ef9a9a; border-color: rgba(244, 67, 54, 0.5);
+        }
+        
+        #setlist .region-item:last-child .chain-btn { visibility: hidden; pointer-events: none; }
+
+        /* --- MOBILE RESPONSIVE TWEAKS --- */
         @media (max-width: 600px) {
             .controls { padding: 8px; gap: 8px; }
             .setlist-row { padding: 6px; gap: 4px; }
-            .region-item { padding: 10px; gap: 8px; }
+            .btn-mini { padding: 8px 10px; font-size: 13px; }
+            .setlist-select { padding: 8px; font-size: 13px; }
+            .info-row { padding: 8px 12px; font-size: 13px; }
+            .toggles-row { padding: 8px; }
+            .toggle-wrapper { font-size: 10px; gap: 6px; }
+            .region-item { padding: 10px; margin-bottom: 6px; gap: 8px; }
+            .region-index { font-size: 16px; min-width: 30px; }
+            .song-name { font-size: 1em; }
+            .song-duration { font-size: 0.85em; }
+            .load-btn { padding: 6px 10px; font-size: 11px; }
+            .chain-btn, .skip-btn, .loop-btn { padding: 4px; }
+            /* Footer Tweaks */
+            .transport-footer { padding: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+            .btn-transport { padding: 12px 0; font-size: 16px; }
+        }
+
+        @keyframes pulse { 
+            0% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.85; transform: scale(1.005); } 
+            100% { opacity: 1; transform: scale(1); } 
         }
     </style>
 </head>
@@ -191,10 +317,10 @@
 <div class="controls">
     <div class="setlist-row">
         <select id="setlistSelect" class="setlist-select" onchange="changeSetlist()"></select>
-        <button class="btn-mini btn-add" onclick="createSetlist()">+</button>
-        <button class="btn-mini btn-del" onclick="deleteSetlist()">&#10005;</button>
-        <button class="btn-mini btn-exp" onclick="exportSetlists()">&#8595;</button>
-        <button class="btn-mini btn-imp" onclick="triggerImport()">&#8593;</button>
+        <button class="btn-mini btn-add" onclick="createSetlist()" title="New Setlist">+</button>
+        <button class="btn-mini btn-del" onclick="deleteSetlist()" title="Delete Setlist">&#10005;</button>
+        <button class="btn-mini btn-exp" onclick="exportSetlists()" title="Download Backup File">&#8595;</button>
+        <button class="btn-mini btn-imp" onclick="triggerImport()" title="Upload Backup File">&#8593;</button>
         <input type="file" id="importInput" style="display:none" accept=".json" onchange="importSetlists(this)">
     </div>
 
@@ -202,14 +328,17 @@
         <div class="toggle-wrapper">
             <label class="switch"><input type="checkbox" id="autoScrollToggle" checked><span class="slider round"></span></label>
             <span>Auto-Scroll</span>
+            <span class="help-icon" onclick="showHelp('scroll')">?</span>
         </div>
         <div class="toggle-wrapper">
             <label class="switch"><input type="checkbox" id="queueModeToggle"><span class="slider round"></span></label>
             <span>Queue Mode</span>
+            <span class="help-icon" onclick="showHelp('queue')">?</span>
         </div>
         <div class="toggle-wrapper">
             <label class="switch"><input type="checkbox" id="autoStopToggle" checked><span class="slider round"></span></label>
             <span>Auto-Stop</span>
+            <span class="help-icon" onclick="showHelp('stop')">?</span>
         </div>
     </div>
 
@@ -217,15 +346,15 @@
         <span id="song-count">Active Songs: 0</span>
         <span id="total-time">Active Playtime: 0:00</span>
     </div>
-
-    <div class="transport-row">
-        <button class="btn-transport btn-play" onclick="togglePlay()">&#9654; PLAY</button>
-        <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
-        <button class="btn-transport btn-refresh" onclick="wwr_start()">&#8635; RESYNC</button>
-    </div>
 </div>
 
 <ul id="setlist"></ul>
+
+<div class="transport-footer">
+    <button class="btn-transport btn-play" onclick="togglePlay()">&#9654; PLAY</button>
+    <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
+    <button class="btn-transport btn-refresh" onclick="wwr_start()">&#8635; RESYNC</button>
+</div>
 
 <script type="text/javascript">
     // --- 0. CRITICAL ANDROID 5 POLYFILLS ---
@@ -356,6 +485,7 @@
                     var rData = reaperMap[item.id];
                     rData.chain = item.chain;
                     rData.skipped = (item.skipped === true);
+                    rData.loop = (item.loop === true);
                     displayList.push(rData);
                     delete reaperMap[item.id];
                 }
@@ -364,7 +494,7 @@
             for (var key in reaperMap) { if (reaperMap.hasOwnProperty(key)) newItems.push(reaperMap[key]); }
             newItems.sort(function(a,b) { return a.start - b.start; });
             for (var k = 0; k < newItems.length; k++) {
-                var d = newItems[k]; d.chain = false; d.skipped = false; displayList.push(d);
+                var d = newItems[k]; d.chain = false; d.skipped = false; d.loop = false; displayList.push(d);
             }
             if (displayList.length > 0 && !isPlaying) wwr_req("SET/POS/" + displayList[0].start);
             initialized = true;
@@ -389,18 +519,20 @@
             for (var key2 in reaperMap) { if (reaperMap.hasOwnProperty(key2)) newItems2.push(reaperMap[key2]); }
             newItems2.sort(function(a,b) { return a.start - b.start; });
             for (var p = 0; p < newItems2.length; p++) {
-                var d2 = newItems2[p]; d2.chain = false; d2.skipped = false; displayList.push(d2);
+                var d2 = newItems2[p]; d2.chain = false; d2.skipped = false; d2.loop = false; displayList.push(d2);
             }
         }
         saveCurrentState();
-        var currentChecksum = JSON.stringify(displayList.map(function(r){ return { id: r.id, chain: r.chain, skipped: r.skipped, name: r.name, color: r.color }; }));
+        var currentChecksum = JSON.stringify(displayList.map(function(r){ 
+            return { id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop, name: r.name, color: r.color }; 
+        }));
         if (currentChecksum !== lastRenderChecksum) {
             lastRenderChecksum = currentChecksum; renderSetlist(); updatePlaybackUI();
         }
     }
 
     function saveCurrentState() {
-        var storageFormat = displayList.map(function(r){ return { id: r.id, chain: r.chain, skipped: r.skipped }; });
+        var storageFormat = displayList.map(function(r){ return { id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop }; });
         setlists[currentSetlistName] = storageFormat;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(setlists));
         localStorage.setItem(CURRENT_KEY, currentSetlistName);
@@ -432,6 +564,8 @@
             
             var chainIcon = r.chain ? "&#10140;" : "&#9632;";
             var chainClass = r.chain ? "chain-btn linked" : "chain-btn";
+            var loopIcon = "&#8635;";
+            var loopClass = r.loop ? "loop-btn looping" : "loop-btn";
             var skipIcon = r.skipped ? "&#10004;" : "&#10006;";
             var skipClass = r.skipped ? "skip-btn skipped" : "skip-btn";
             var indexStyle = r.color ? 'background-color: ' + r.color + ';' : '';
@@ -450,6 +584,7 @@
             html += '<div class="song-actions">';
             html += '  <div class="btn-row-group">';
             html += '    <button class="' + chainClass + '" onclick="toggleChain(\'' + r.id + '\')" title="Follow Action">' + chainIcon + '</button>';
+            html += '    <button class="' + loopClass + '" onclick="toggleLoop(\'' + r.id + '\')" title="Loop Region">' + loopIcon + '</button>';
             html += '    <button class="' + skipClass + '" onclick="toggleSkip(\'' + r.id + '\')" title="Skip Song">' + skipIcon + '</button>';
             html += '  </div>';
             html += '  <button class="load-btn" onclick="playRegion(' + r.start + ', \'' + r.id + '\')">PLAY NEXT</button>';
@@ -467,6 +602,10 @@
     function toggleChain(id) {
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
         if (item) { item.chain = !item.chain; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
+    }
+    function toggleLoop(id) {
+        var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
+        if (item) { item.loop = !item.loop; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
     }
     function toggleSkip(id) {
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
@@ -527,6 +666,8 @@
             }
             var timeRemaining = activeRegion.end - currentPos;
             if (timeRemaining <= 0.2 && timeRemaining > -1 && isPlaying) {
+                if (activeRegion.loop) { wwr_req("SET/POS/" + activeRegion.start); return; }
+                
                 if (queuedRegion) {
                     wwr_req("SET/POS/" + queuedRegion.start); queuedRegion = null;
                     var queuedEls = document.querySelectorAll('.region-item');
@@ -603,7 +744,7 @@
     function createSetlist() {
         var name = prompt("Name for new setlist?");
         if (name && !setlists[name]) {
-            setlists[name] = displayList.map(function(r){ return { id: r.id, chain: r.chain, skipped: r.skipped }; });
+            setlists[name] = displayList.map(function(r){ return { id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop }; });
             currentSetlistName = name; saveCurrentState(); updateSetlistDropdown(); displayList = []; initialized = false; syncRegions();
         }
     }
@@ -641,8 +782,7 @@
         }; reader.readAsText(file); input.value = '';
     }
 
-    // --- 9. DRAG & DROP (ROBUST) ---
-    // Prevent Scroll Hijack
+    // --- 9. DRAG & DROP ---
     document.addEventListener('touchmove', function(e) { if (isDragging) { e.preventDefault(); } }, { passive: false });
 
     new Sortable(document.getElementById('setlist'), {
@@ -650,41 +790,28 @@
         handle: '.drag-handle',
         forceFallback: true,      
         fallbackOnBody: true,
-        
-        // --- DELAY REMOVED ---
-        delay: 0,               
-        
+        delay: 250, 
+        delayOnTouchOnly: true,
+        touchStartThreshold: 5,
         scroll: true,             
         scrollSensitivity: 50,    
         ghostClass: 'sortable-ghost',
         fallbackClass: 'sortable-fallback',
 
-        onStart: function (evt) {
-            isDragging = true;
-            document.body.style.overflow = 'hidden'; // Lock Body
-        },
-        
+        onStart: function (evt) { isDragging = true; document.body.style.overflow = 'hidden'; },
         onEnd: function (evt) {
-            isDragging = false;
-            document.body.style.overflow = ''; // Unlock Body
-            
+            isDragging = false; document.body.style.overflow = ''; 
             var items = document.querySelectorAll("#setlist .region-item");
             var newOrder = []; var sortedDisplay = [];
-            
             for (var i = 0; i < items.length; i++) {
                 var id = items[i].getAttribute("data-id");
                 var existing = null;
                 for(var k=0; k<displayList.length; k++) { if(displayList[k].id == id) { existing = displayList[k]; break; } }
-                if (existing) {
-                    newOrder.push({ id: id, chain: existing.chain, skipped: existing.skipped });
-                    sortedDisplay.push(existing);
-                }
+                if (existing) { newOrder.push({ id: id, chain: existing.chain, skipped: existing.skipped, loop: existing.loop }); sortedDisplay.push(existing); }
             }
-            setlists[currentSetlistName] = newOrder;
-            saveCurrentState();
-            displayList = sortedDisplay;
+            setlists[currentSetlistName] = newOrder; saveCurrentState(); displayList = sortedDisplay;
             lastRenderChecksum = JSON.stringify(displayList.map(function(r){ 
-                return { id: r.id, chain: r.chain, skipped: r.skipped, name: r.name, color: r.color }; 
+                return { id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop, name: r.name, color: r.color }; 
             }));
         }
     });
@@ -709,6 +836,15 @@
             btn.style.backgroundColor = "#2196F3"; btn.style.color = "white";
             setTimeout(function() { btn.style.backgroundColor = ""; btn.style.color = ""; }, 200);
         }
+    }
+    
+    function showHelp(topic) {
+        var msgs = {
+            scroll: "Auto-Scroll keeps the playing song visible.",
+            queue: "Queue Mode ON = seamless transition.\nQueue Mode OFF = instant jump.",
+            stop: "Auto-Stop ON = stops at end of region.\n(Use the chain button to override per song)."
+        };
+        alert(msgs[topic]);
     }
 </script>
 </body>
