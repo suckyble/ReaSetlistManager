@@ -20,15 +20,16 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
     * **Auto-Stop:** Automatically stop playback at the end of a song.
     * **Follow Actions (Chaining):** Link specific songs together to play continuously (overriding Auto-Stop), allowing for custom mini-sets or medleys.
     * **Skip / Disable Songs:** Mark specific songs to be skipped. Playback will automatically jump over them to the next active song.
+    * **Loop Mode (⟳):** Toggle the purple loop icon to repeat a song indefinitely. This overrides Auto-Stop and Chaining, making it perfect for ambient vamps while talking to the audience. You must manually toggle it off to proceed to the next song.
 * **Live Time Display:** Shows total song duration when stopped, and switches to a high-visibility **Countdown Timer** during playback.
 * **Keyboard & Footswitch Support:** Map pedals or keys to trigger playback, navigation, and panic stops.
 * **Backup:** Export and Import your setlist data via JSON files.
-* **Touch Optimized:** Designed with large tap targets for iPads/Android tablets.
+* **Touch Optimized:** Designed with large tap targets for iPads/Android tablets - transport controls are placed in a sticky footer.
 * **Region Color Sync:** Automatically displays the color of your Reaper regions for better visual organization and quick identification.
 
 ## 🛠️ Installation (Offline Ready)
 
-For stability on stage, this tool does **not** require an internet connection. You must save the library file locally.
+For stability on stage, this tool does **not** require an internet connection, just a WiFi connection for the device running Reaper and the device using ReaSetlistManager. 
 
 ### 1. Download Files
 1.  Save the `ReaSetlistManager.html` code provided into a file named **`ReaSetlistManager.html`**.
