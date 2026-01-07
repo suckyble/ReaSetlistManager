@@ -860,6 +860,15 @@
         if (event.code === 'ArrowRight') { event.preventDefault(); var t = (activeIdx === -1) ? (displayList.find(function(x){return !x.skipped})||null) : findNextValidSong(activeIdx); if(t) cueRegion(t.start, t.id); }
         if (event.code === 'ArrowUp') { event.preventDefault(); if (activeIdx > 0) { var t2 = findPrevValidSong(activeIdx); if (t2) cueRegion(t2.start, t2.id); } }
         if (event.code === 'ArrowDown') { event.preventDefault(); if (displayList.length > 0) cueRegion(displayList[0].start, displayList[0].id); }
+        if (event.code === 'Escape') {
+            event.preventDefault();
+            if (activeIdx !== -1) {
+                // Only disable if it is currently enabled (Safe "Exit Loop")
+                if (displayList[activeIdx].loop) {
+                    toggleLoop(displayList[activeIdx].id);
+                }
+            }
+        }
     });
 
     function flashRow(id) {
