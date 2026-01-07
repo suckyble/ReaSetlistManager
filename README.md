@@ -102,6 +102,7 @@ This app is can also work with **Bluetooth Page Turners** (AirTurn/PageFlip) and
 | **Up ⬆** | **Play Previous** | Cues the **Previous** song (stops and jumps to start). Automatically skips disabled tracks. |
 | **Left ⬅** | **Restart Song** | Jumps to the start of the **Current** song and restarts playback immediately. |
 | **Down ⬇** | **Reset Set** | Jumps to the start of **Song #1** (Top of Setlist and cues it for playback). |
+| **ESC** | **Stops Loop** | Stops the Loop action (only if loop is currently on). |
 
 ## ⚙️ Technical Details
 
