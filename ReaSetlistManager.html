@@ -13,21 +13,19 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #eee; margin: 0; 
-            /* Increased bottom padding so list clears the new footer */
-            padding-bottom: 100px; 
+            color: #eee; margin: 0; padding-bottom: 100px; /* Space for footer */
             user-select: none; -webkit-user-select: none;
             min-height: 100vh;
         }
 
-        /* --- CONTROLS AREA (TOP) --- */
+        /* --- CONTROLS AREA --- */
         .controls { 
             position: sticky; top: 0; z-index: 100; 
             background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            padding: 12px; 
+            padding: 16px; 
             border-bottom: 2px solid #0f3460;
-            display: flex; flex-direction: column; gap: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
         }
 
@@ -36,11 +34,10 @@
             position: fixed; bottom: 0; left: 0; right: 0;
             background: linear-gradient(0deg, #1a1a2e 0%, #16213e 100%);
             padding: 12px;
-            /* Safe area for modern phones without buttons */
             padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
             border-top: 2px solid #0f3460;
             z-index: 500;
-            display: flex; gap: 12px;
+            display: flex; gap: 8px; /* Tighter gap for 4 buttons */
             box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
         }
@@ -49,14 +46,16 @@
         .setlist-row { 
             display: flex; gap: 8px; 
             background: rgba(42, 42, 42, 0.6); 
-            padding: 8px; 
+            padding: 10px; 
             border-radius: 12px; 
             align-items: center; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             flex-wrap: wrap;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
         }
         .setlist-select {
-            flex-grow: 1; padding: 10px; 
+            flex-grow: 1; padding: 10px 12px; 
             background: rgba(17, 17, 17, 0.8);
             color: #fff; 
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -64,6 +63,7 @@
             font-size: 14px; 
             outline: none; 
             min-width: 100px;
+            transition: all 0.3s ease;
         }
         .btn-mini {
             padding: 10px 14px; 
@@ -74,6 +74,7 @@
             color: #ccc; 
             border-radius: 8px; 
             font-size: 14px;
+            transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .btn-add { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; border-color: rgba(76, 175, 80, 0.3); }
@@ -81,44 +82,52 @@
         .btn-exp { background: linear-gradient(135deg, #1565C0 0%, #2196F3 100%); color: white; border-color: rgba(33, 150, 243, 0.3); }
         .btn-imp { background: linear-gradient(135deg, #EF6C00 0%, #FF9800 100%); color: white; border-color: rgba(255, 152, 0, 0.3); }
 
-        /* Transport Buttons (Styled for Footer) */
+        /* Transport Buttons */
         .btn-transport { 
-            flex: 1; padding: 16px 0; font-size: 18px; font-weight: bold; 
+            flex: 1; padding: 16px 0; font-size: 16px; font-weight: bold; 
             cursor: pointer; border-radius: 10px; border: none; color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            position: relative; overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 0; /* Allows shrinking on small screens */
         }
-        .btn-transport:active { transform: scale(0.96); }
-        .btn-play { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); }
+        .btn-transport:active { transform: scale(0.98); }
+        
+        .btn-play { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); flex: 1.5; /* Play is slightly bigger */ }
         .btn-stop { background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%); }
-        .btn-refresh { background: linear-gradient(135deg, #37474f 0%, #546e7a 100%); }
+        .btn-refresh { background: linear-gradient(135deg, #37474f 0%, #546e7a 100%); font-size: 14px; }
+        
+        /* NEW: Footer Loop Button */
+        .btn-loop-transport { 
+            background: linear-gradient(135deg, #424242 0%, #616161 100%); 
+            color: #aaa;
+        }
+        .btn-loop-transport.active {
+            background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(156, 39, 176, 0.6);
+        }
 
         /* Toggles Row */
         .toggles-row { 
             display: flex; justify-content: space-around; 
             background: rgba(37, 37, 37, 0.6);
-            padding: 10px; border-radius: 12px;
+            padding: 12px; border-radius: 12px;
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .toggle-wrapper { 
-            display: flex; align-items: center; gap: 8px; 
+            display: flex; align-items: center; gap: 10px; 
             font-size: 11px; text-transform: uppercase; color: #aaa;
             font-weight: 600; letter-spacing: 0.5px;
         }
-        .help-icon {
-            display: inline-flex; justify-content: center; align-items: center;
-            width: 18px; height: 18px; border-radius: 50%;
-            background: linear-gradient(135deg, #37474f 0%, #546e7a 100%);
-            color: #fff; font-weight: bold; font-size: 11px;
-            cursor: pointer; margin-left: 2px; 
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
+        
         /* Info Row */
         .info-row {
             display: flex; justify-content: space-between;
-            padding: 10px 14px; 
-            font-size: 14px; 
+            padding: 12px 16px; 
+            font-size: 16px; 
             color: #90caf9;
             font-weight: bold;
             font-family: monospace;
@@ -265,19 +274,16 @@
             font-weight: bold;
         }
         
-        /* Chain (Green) */
         .chain-btn.linked { 
             background: linear-gradient(135deg, rgba(27, 94, 32, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%);
             color: #a5d6a7; border-color: rgba(76, 175, 80, 0.5);
         }
         
-        /* Loop (Purple) */
         .loop-btn.looping {
             background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
             color: #e1bee7; border-color: #ab47bc;
         }
 
-        /* Skip (Red) */
         .skip-btn.skipped { 
             background: linear-gradient(135deg, rgba(183, 28, 28, 0.8) 0%, rgba(211, 47, 47, 0.8) 100%);
             color: #ef9a9a; border-color: rgba(244, 67, 54, 0.5);
@@ -300,9 +306,13 @@
             .song-duration { font-size: 0.85em; }
             .load-btn { padding: 6px 10px; font-size: 11px; }
             .chain-btn, .skip-btn, .loop-btn { padding: 4px; }
+            
             /* Footer Tweaks */
             .transport-footer { padding: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
             .btn-transport { padding: 12px 0; font-size: 16px; }
+            
+            /* Disable hover effects on mobile */
+            .btn-transport:hover, .load-btn:hover { transform: none; box-shadow: none; }
         }
 
         @keyframes pulse { 
@@ -353,7 +363,8 @@
 <div class="transport-footer">
     <button class="btn-transport btn-play" onclick="togglePlay()">&#9654; PLAY</button>
     <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
-    <button class="btn-transport btn-refresh" onclick="wwr_start()">&#8635; RESYNC</button>
+    <button id="footer-loop-btn" class="btn-transport btn-loop-transport" onclick="toggleCurrentLoop()">&#8635; LOOP</button>
+    <button class="btn-transport btn-refresh" onclick="wwr_start()">SYNC</button>
 </div>
 
 <script type="text/javascript">
@@ -603,10 +614,26 @@
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
         if (item) { item.chain = !item.chain; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
     }
+    
     function toggleLoop(id) {
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
         if (item) { item.loop = !item.loop; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
     }
+    
+    // NEW: Global Toggle for Current Song (Footer Button)
+    function toggleCurrentLoop() {
+        var activeIdx = -1;
+        for(var i=0; i<displayList.length; i++) {
+            var r = displayList[i];
+            if (currentPos >= r.start && currentPos <= r.end) { activeIdx = i; break; }
+        }
+        if (activeIdx !== -1) {
+            var item = displayList[activeIdx];
+            item.loop = !item.loop;
+            saveCurrentState(); lastRenderChecksum = ""; syncRegions();
+        }
+    }
+    
     function toggleSkip(id) {
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
         if (item) { item.skipped = !item.skipped; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
@@ -634,6 +661,11 @@
             if (currentPos >= r.start && currentPos <= r.end) { activeIdx = j; break; }
         }
         var activeRegion = (activeIdx !== -1) ? displayList[activeIdx] : null;
+
+        // Footer Button Logic: Light up if active region is looping
+        var loopBtn = document.getElementById("footer-loop-btn");
+        if (activeRegion && activeRegion.loop) loopBtn.classList.add("active");
+        else loopBtn.classList.remove("active");
 
         if (lastActiveID && (!activeRegion || activeRegion.id !== lastActiveID)) {
             var oldDur = document.getElementById("dur-" + lastActiveID);
