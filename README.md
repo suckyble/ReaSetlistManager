@@ -22,6 +22,7 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
     * **Skip / Disable Songs:** Mark specific songs to be skipped. Playback will automatically jump over them to the next active song.
     * **Loop Mode (⟳):** Toggle the purple loop icon to repeat a song indefinitely. This overrides Auto-Stop and Chaining, making it perfect for ambient vamps while talking to the audience. You must manually toggle it off to proceed to the next song.
 * **Live Time Display:** Shows total song duration when stopped, and switches to a high-visibility **Countdown Timer** during playback.
+* **Hide Skipped Songs:** Toggle the visibility of deactivated songs for a cleaner view. The setlist numbering automatically updates to reflect only the active songs.
 * **Keyboard & Footswitch Support:** Map pedals or keys to trigger playback, navigation, and panic stops.
 * **Backup:** Export and Import your setlist data via JSON files.
 * **Touch Optimized:** Designed with large tap targets for iPads/Android tablets - transport controls are placed in a sticky footer.
