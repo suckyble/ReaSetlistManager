@@ -13,7 +13,7 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #eee; margin: 0; padding-bottom: 100px; /* Space for footer */
+            color: #eee; margin: 0; padding-bottom: 100px; 
             user-select: none; -webkit-user-select: none;
             min-height: 100vh;
         }
@@ -26,19 +26,6 @@
             border-bottom: 2px solid #0f3460;
             display: flex; flex-direction: column; gap: 12px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-        }
-
-        /* --- TRANSPORT FOOTER (BOTTOM STICKY) --- */
-        .transport-footer {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(0deg, #1a1a2e 0%, #16213e 100%);
-            padding: 12px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
-            border-top: 2px solid #0f3460;
-            z-index: 500;
-            display: flex; gap: 8px; /* Tighter gap for 4 buttons */
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
         }
 
@@ -82,31 +69,36 @@
         .btn-exp { background: linear-gradient(135deg, #1565C0 0%, #2196F3 100%); color: white; border-color: rgba(33, 150, 243, 0.3); }
         .btn-imp { background: linear-gradient(135deg, #EF6C00 0%, #FF9800 100%); color: white; border-color: rgba(255, 152, 0, 0.3); }
 
-        /* Transport Buttons */
+        /* Transport Footer */
+        .transport-footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(0deg, #1a1a2e 0%, #16213e 100%);
+            padding: 12px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+            border-top: 2px solid #0f3460;
+            z-index: 500;
+            display: flex; gap: 8px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+        }
+
         .btn-transport { 
             flex: 1; padding: 16px 0; font-size: 16px; font-weight: bold; 
             cursor: pointer; border-radius: 10px; border: none; color: white;
             transition: all 0.3s ease;
             box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
-            min-width: 0; /* Allows shrinking on small screens */
+            position: relative; overflow: hidden; min-width: 0;
         }
         .btn-transport:active { transform: scale(0.98); }
         
-        .btn-play { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); flex: 1.5; /* Play is slightly bigger */ }
+        .btn-play { background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); flex: 1.5; }
         .btn-stop { background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%); }
         .btn-refresh { background: linear-gradient(135deg, #37474f 0%, #546e7a 100%); font-size: 14px; }
         
-        /* NEW: Footer Loop Button */
-        .btn-loop-transport { 
-            background: linear-gradient(135deg, #424242 0%, #616161 100%); 
-            color: #aaa;
-        }
+        .btn-loop-transport { background: linear-gradient(135deg, #424242 0%, #616161 100%); color: #aaa; }
         .btn-loop-transport.active {
             background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(156, 39, 176, 0.6);
+            color: #fff; box-shadow: 0 0 15px rgba(156, 39, 176, 0.6);
         }
 
         /* Toggles Row */
@@ -116,24 +108,28 @@
             padding: 12px; border-radius: 12px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 10px;
         }
         .toggle-wrapper { 
-            display: flex; align-items: center; gap: 10px; 
+            display: flex; align-items: center; gap: 8px; 
             font-size: 11px; text-transform: uppercase; color: #aaa;
             font-weight: 600; letter-spacing: 0.5px;
         }
-        
+        .help-icon {
+            display: inline-flex; justify-content: center; align-items: center;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: linear-gradient(135deg, #37474f 0%, #546e7a 100%);
+            color: #fff; font-weight: bold; font-size: 11px;
+            cursor: pointer; margin-left: 2px; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         /* Info Row */
         .info-row {
             display: flex; justify-content: space-between;
-            padding: 12px 16px; 
-            font-size: 16px; 
-            color: #90caf9;
-            font-weight: bold;
-            font-family: monospace;
-            letter-spacing: 0.5px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
+            padding: 12px 16px; font-size: 16px; 
+            color: #90caf9; font-weight: bold; font-family: monospace;
+            background: rgba(0,0,0,0.2); border-radius: 8px;
         }
 
         /* Switches */
@@ -171,8 +167,7 @@
         }
         .region-item.active { 
             background: linear-gradient(135deg, rgba(27, 94, 32, 0.3) 0%, rgba(46, 125, 50, 0.2) 100%);
-            border-left-color: #00e676;
-            box-shadow: 0 6px 24px rgba(0, 230, 118, 0.3);
+            border-left-color: #00e676; box-shadow: 0 6px 24px rgba(0, 230, 118, 0.3);
         }
         .region-item.queued { 
             border-left-color: #ffd54f; 
@@ -181,137 +176,108 @@
             box-shadow: 0 6px 24px rgba(255, 213, 79, 0.3);
         }
         .region-item.skipped {
-            opacity: 0.4;
-            border-left-color: #444;
-            background: #1a1a1a;
-            filter: grayscale(100%);
+            opacity: 0.4; border-left-color: #444; background: #1a1a1a; filter: grayscale(100%);
         }
         
         /* --- DRAG VISUALS --- */
         .sortable-fallback { 
-            opacity: 0.9 !important; 
-            background: #2a2a2a; 
+            opacity: 1 !important; background: #2a2a2a; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.9);
-            border: 1px solid rgba(255,255,255,0.2);
-            z-index: 99999;
-            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2); z-index: 99999; border-radius: 12px;
         }
         .sortable-ghost { 
-            opacity: 0.4 !important; 
-            background: rgba(255,255,255,0.05) !important;
+            opacity: 0.4 !important; background: rgba(255,255,255,0.05) !important;
             border: 2px dashed #666 !important; 
         }
         
         .region-index {
             font-size: 20px; font-weight: 800; color: #546e7a; 
             min-width: 36px; text-align: center;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            padding: 4px 0; border-radius: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 4px 0; border-radius: 8px;
         }
         .region-index::before { content: counter(song-counter); }
         .region-index.colored {
-            color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
 
         .drag-handle { 
             font-size: 24px; color: #607d8b; padding: 15px; 
-            cursor: grab; line-height: 1; 
-            touch-action: none; 
+            cursor: grab; line-height: 1; touch-action: none; 
             -webkit-user-select: none; user-select: none;
         }
         .drag-handle:active { cursor: grabbing; color: #90caf9; }
         
         .song-info { flex-grow: 1; min-width: 0; }
         .song-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: baseline; }
-        .song-name { 
-            font-weight: 600; color: #fff; font-size: 1.1em;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .song-duration { 
-            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-            color: #90a4ae; font-weight: 500; font-size: 0.95em;
-            min-width: 50px; text-align: right;
-        }
-        .song-duration.live-time {
-            color: #00e676; 
-            font-weight: 800;
-            text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
-        }
+        .song-name { font-weight: 600; color: #fff; font-size: 1.1em; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .song-duration { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; color: #90a4ae; font-weight: 500; font-size: 0.95em; min-width: 50px; text-align: right; }
+        .song-duration.live-time { color: #00e676; font-weight: 800; text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
         
-        .progress-bg { 
-            background: rgba(17, 17, 17, 0.6);
-            height: 6px; width: 100%; border-radius: 10px; 
-            overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .progress-fill { 
-            background: linear-gradient(90deg, #00e676 0%, #00c853 100%);
-            height: 100%; width: 0%; transition: width 0.1s linear;
-            box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
-        }
+        .progress-bg { background: rgba(17, 17, 17, 0.6); height: 6px; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .progress-fill { background: linear-gradient(90deg, #00e676 0%, #00c853 100%); height: 100%; width: 0%; transition: width 0.1s linear; box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); }
         
         .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
         .btn-row-group { display: flex; gap: 6px; width: 100%; }
 
         .load-btn { 
             background: linear-gradient(135deg, rgba(33, 150, 243, 0.2) 0%, rgba(33, 150, 243, 0.1) 100%);
-            color: #64b5f6; border: 1px solid rgba(33, 150, 243, 0.5);
-            border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: bold;
-            white-space: nowrap; cursor: pointer; width: 100%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            color: #64b5f6; border: 1px solid rgba(33, 150, 243, 0.5); border-radius: 8px; 
+            padding: 8px 14px; font-size: 12px; font-weight: bold; white-space: nowrap; 
+            cursor: pointer; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .load-btn:active { 
-            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
-            color: white; transform: translateY(0);
-        }
+        .load-btn:active { background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%); color: white; transform: translateY(0); }
 
-        /* --- ACTION BUTTONS (Chain, Loop, Skip) --- */
         .chain-btn, .skip-btn, .loop-btn {
             background: rgba(51, 51, 51, 0.6); color: #78909c;
             border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; 
-            padding: 6px; width: 33%; 
-            text-align: center; cursor: pointer;
-            font-weight: bold;
+            padding: 6px; width: 33%; text-align: center; cursor: pointer; font-weight: bold;
         }
-        
-        .chain-btn.linked { 
-            background: linear-gradient(135deg, rgba(27, 94, 32, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%);
-            color: #a5d6a7; border-color: rgba(76, 175, 80, 0.5);
-        }
-        
-        .loop-btn.looping {
-            background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
-            color: #e1bee7; border-color: #ab47bc;
-        }
-
-        .skip-btn.skipped { 
-            background: linear-gradient(135deg, rgba(183, 28, 28, 0.8) 0%, rgba(211, 47, 47, 0.8) 100%);
-            color: #ef9a9a; border-color: rgba(244, 67, 54, 0.5);
-        }
-        
+        .chain-btn.linked { background: linear-gradient(135deg, rgba(27, 94, 32, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%); color: #a5d6a7; border-color: rgba(76, 175, 80, 0.5); }
+        .loop-btn.looping { background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%); color: #e1bee7; border-color: #ab47bc; }
+        .skip-btn.skipped { background: linear-gradient(135deg, rgba(183, 28, 28, 0.8) 0%, rgba(211, 47, 47, 0.8) 100%); color: #ef9a9a; border-color: rgba(244, 67, 54, 0.5); }
         #setlist .region-item:last-child .chain-btn { visibility: hidden; pointer-events: none; }
 
-        /* --- MOBILE RESPONSIVE TWEAKS --- */
+        /* --- MOBILE OPTIMIZATIONS (PORTRAIT) --- */
         @media (max-width: 600px) {
             .controls { padding: 8px; gap: 8px; }
+            
+            /* Tighten Toggles Row & Layout */
+            .toggles-row { 
+                flex-wrap: nowrap; /* Keep in one row */
+                justify-content: space-between; 
+                padding: 8px 4px; 
+                gap: 2px;
+            }
+            .toggle-wrapper { 
+                flex-direction: column; /* Stack switch on top of text */
+                flex: 1; /* Equal width */
+                gap: 2px; 
+                min-width: 50px;
+                text-align: center;
+                justify-content: flex-start;
+            }
+            .toggle-wrapper span {
+                font-size: 9px; /* Smaller text */
+                line-height: 1.1;
+                white-space: nowrap;
+            }
+            .switch { transform: scale(0.8); margin: 0; }
+            .help-icon { display: none; /* Hide ? on mobile to save space */ }
+
+            /* Compact List & Footer */
             .setlist-row { padding: 6px; gap: 4px; }
             .btn-mini { padding: 8px 10px; font-size: 13px; }
             .setlist-select { padding: 8px; font-size: 13px; }
-            .info-row { padding: 8px 12px; font-size: 13px; }
-            .toggles-row { padding: 8px; }
-            .toggle-wrapper { font-size: 10px; gap: 6px; }
+            .info-row { padding: 8px 12px; font-size: 12px; }
+            .transport-row { gap: 8px; }
+            .btn-transport { padding: 12px 0; font-size: 16px; }
             .region-item { padding: 10px; margin-bottom: 6px; gap: 8px; }
             .region-index { font-size: 16px; min-width: 30px; }
             .song-name { font-size: 1em; }
             .song-duration { font-size: 0.85em; }
             .load-btn { padding: 6px 10px; font-size: 11px; }
             .chain-btn, .skip-btn, .loop-btn { padding: 4px; }
-            
-            /* Footer Tweaks */
             .transport-footer { padding: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
-            .btn-transport { padding: 12px 0; font-size: 16px; }
-            
-            /* Disable hover effects on mobile */
             .btn-transport:hover, .load-btn:hover { transform: none; box-shadow: none; }
         }
 
@@ -350,6 +316,11 @@
             <span>Auto-Stop</span>
             <span class="help-icon" onclick="showHelp('stop')">?</span>
         </div>
+        <div class="toggle-wrapper">
+            <label class="switch"><input type="checkbox" id="hideSkippedToggle" onchange="toggleHideSkipped()"><span class="slider round"></span></label>
+            <span>Hide Skips</span>
+            <span class="help-icon" onclick="showHelp('hide')">?</span>
+        </div>
     </div>
 
     <div class="info-row">
@@ -363,7 +334,7 @@
 <div class="transport-footer">
     <button class="btn-transport btn-play" onclick="togglePlay()">&#9654; PLAY</button>
     <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
-    <button id="footer-loop-btn" class="btn-transport btn-loop-transport" onclick="toggleCurrentLoop()">&#8635; LOOP</button>
+    <button id="footer-loop-btn" class="btn-transport btn-loop-transport" onclick="toggleCurrentLoop()">&#8635;</button>
     <button class="btn-transport btn-refresh" onclick="wwr_start()">SYNC</button>
 </div>
 
@@ -439,6 +410,9 @@
     var lastRenderChecksum = "";
     var isDragging = false;
     var initialized = false;
+    
+    // View State
+    var hideSkippedMode = (localStorage.getItem("reaper_hide_skipped") === "true");
 
     // STORAGE
     var STORAGE_KEY = "reaper_setlists_v9"; 
@@ -448,6 +422,9 @@
     if (!setlists["Default"]) setlists["Default"] = [];
     if (!setlists[currentSetlistName]) currentSetlistName = "Default";
 
+    // Init View Toggle
+    document.getElementById("hideSkippedToggle").checked = hideSkippedMode;
+    
     updateSetlistDropdown();
 
     // --- 3. LISTENER ---
@@ -536,7 +513,8 @@
         saveCurrentState();
         var currentChecksum = JSON.stringify(displayList.map(function(r){ 
             return { id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop, name: r.name, color: r.color }; 
-        }));
+        })) + hideSkippedMode;
+        
         if (currentChecksum !== lastRenderChecksum) {
             lastRenderChecksum = currentChecksum; renderSetlist(); updatePlaybackUI();
         }
@@ -567,7 +545,12 @@
         
         for(var i=0; i<displayList.length; i++) {
             var r = displayList[i];
+            
+            // Stats always count active (unskipped) songs
             if (!r.skipped) { totalDuration += r.duration; activeCount++; }
+            
+            // Hide Logic
+            if (hideSkippedMode && r.skipped) continue;
 
             var li = document.createElement("li");
             li.className = "region-item" + (r.skipped ? " skipped" : "");
@@ -610,6 +593,13 @@
     }
 
     // --- 6. ACTIONS ---
+    function toggleHideSkipped() {
+        hideSkippedMode = document.getElementById("hideSkippedToggle").checked;
+        localStorage.setItem("reaper_hide_skipped", hideSkippedMode);
+        lastRenderChecksum = ""; 
+        syncRegions();
+    }
+
     function toggleChain(id) {
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
         if (item) { item.chain = !item.chain; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
@@ -620,7 +610,6 @@
         if (item) { item.loop = !item.loop; saveCurrentState(); lastRenderChecksum = ""; syncRegions(); }
     }
     
-    // NEW: Global Toggle for Current Song (Footer Button)
     function toggleCurrentLoop() {
         var activeIdx = -1;
         for(var i=0; i<displayList.length; i++) {
@@ -662,7 +651,6 @@
         }
         var activeRegion = (activeIdx !== -1) ? displayList[activeIdx] : null;
 
-        // Footer Button Logic: Light up if active region is looping
         var loopBtn = document.getElementById("footer-loop-btn");
         if (activeRegion && activeRegion.loop) loopBtn.classList.add("active");
         else loopBtn.classList.remove("active");
@@ -814,7 +802,7 @@
         }; reader.readAsText(file); input.value = '';
     }
 
-    // --- 9. DRAG & DROP ---
+    // --- 9. DRAG & DROP (ROBUST) ---
     document.addEventListener('touchmove', function(e) { if (isDragging) { e.preventDefault(); } }, { passive: false });
 
     new Sortable(document.getElementById('setlist'), {
@@ -854,21 +842,16 @@
         for(var i=0; i<displayList.length; i++) {
             var r = displayList[i]; if (currentPos >= r.start && currentPos <= r.end) { activeIdx = i; break; }
         }
+        if (event.code === 'Escape') {
+            event.preventDefault();
+            if (activeIdx !== -1 && displayList[activeIdx].loop) { toggleLoop(displayList[activeIdx].id); }
+        }
         if (event.code === 'Space') { event.preventDefault(); togglePlay(); }
         if (event.code === 'Enter') { event.preventDefault(); smartStop(); }
         if (event.code === 'ArrowLeft') { event.preventDefault(); if (activeIdx !== -1) { playRegion(displayList[activeIdx].start, displayList[activeIdx].id); flashRow(displayList[activeIdx].id); } }
         if (event.code === 'ArrowRight') { event.preventDefault(); var t = (activeIdx === -1) ? (displayList.find(function(x){return !x.skipped})||null) : findNextValidSong(activeIdx); if(t) cueRegion(t.start, t.id); }
         if (event.code === 'ArrowUp') { event.preventDefault(); if (activeIdx > 0) { var t2 = findPrevValidSong(activeIdx); if (t2) cueRegion(t2.start, t2.id); } }
         if (event.code === 'ArrowDown') { event.preventDefault(); if (displayList.length > 0) cueRegion(displayList[0].start, displayList[0].id); }
-        if (event.code === 'Escape') {
-            event.preventDefault();
-            if (activeIdx !== -1) {
-                // Only disable if it is currently enabled (Safe "Exit Loop")
-                if (displayList[activeIdx].loop) {
-                    toggleLoop(displayList[activeIdx].id);
-                }
-            }
-        }
     });
 
     function flashRow(id) {
@@ -883,7 +866,8 @@
         var msgs = {
             scroll: "Auto-Scroll keeps the playing song visible.",
             queue: "Queue Mode ON = seamless transition.\nQueue Mode OFF = instant jump.",
-            stop: "Auto-Stop ON = stops at end of region.\n(Use the chain button to override per song)."
+            stop: "Auto-Stop ON = stops at end of region.\n(Use the chain button to override per song).",
+            hide: "Hide Skipped ON = Removes inactive songs from the view for a cleaner list."
         };
         alert(msgs[topic]);
     }
