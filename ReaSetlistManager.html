@@ -321,6 +321,11 @@
             <span>Hide Skips</span>
             <span class="help-icon" onclick="showHelp('hide')">?</span>
         </div>
+        <div class="toggle-wrapper">
+            <label class="switch"><input type="checkbox" id="initSongMidiToggle" checked><span class="slider round"></span></label>
+            <span>Init song to send MIDI</span>
+            <span class="help-icon" onclick="showHelp('initsongmidi')">?</span>
+        </div>
     </div>
 
     <div class="info-row">
@@ -716,7 +721,7 @@
                 if (document.getElementById('autoStopToggle').checked && !activeRegion.chain) {
                     wwr_req(1016); 
                     var nextRegion2 = findNextValidSong(activeIdx);
-                    if (nextRegion2) { setTimeout(function() { wwr_req("SET/POS/" + nextRegion2.start); }, 100); }
+                    if (nextRegion2) { setTimeout(function() { wwr_req("SET/POS/" + nextRegion2.start); triggerMidi(); }, 100); }
                 }
             }
         }
@@ -736,8 +741,17 @@
             if (row) row.classList.add('queued');
         }
     }
+
+    function triggerMidi()
+    {
+        if(!document.getElementById('initSongMidiToggle').checked)
+            return;
+        
+        wwr_req(1007) // send start
+        setTimeout(function() { wwr_req(1016); }, 100); // send stop after 100ms
+    }
     
-    function cueRegion(start, id) { wwr_req(1016); wwr_req("SET/POS/" + start); flashRow(id); }
+    function cueRegion(start, id) { wwr_req(1016); wwr_req("SET/POS/" + start); flashRow(id); triggerMidi(); }
     
     function smartStop() {
         var activeIdx = -1;
@@ -878,7 +892,8 @@
             scroll: "Auto-Scroll keeps the playing song visible.",
             queue: "Queue Mode ON = seamless transition.\nQueue Mode OFF = instant jump.",
             stop: "Auto-Stop ON = stops at end of region.\n(Use the chain button to override per song).",
-            hide: "Hide Skipped ON = Removes inactive songs from the view for a cleaner list."
+            hide: "Hide Skipped ON = Removes inactive songs from the view for a cleaner list.",
+            initsongmidi: "Briefly play song to initialize MIDI commands at the start of the song region. Only works together with Auto-Stop!"
         };
         alert(msgs[topic]);
     }
