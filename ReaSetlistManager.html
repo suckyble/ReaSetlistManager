@@ -395,6 +395,13 @@
         }
     })();
 
+    // Helper (to fix precision mismatch between regions (9 digits) and current pos (6 digits))
+    function parseFloatDigits(value, digits = 6)
+    {
+        var d = Math.pow(10, digits); 
+        return Math.round(parseFloat(value)*d) / d;
+    }
+
     // --- 1. REAPER CONNECTION ---
     wwr_req_recur("TRANSPORT", 100);
     wwr_req_recur("REGION", 1000); 
@@ -460,8 +467,12 @@
                      while (cssColor.length < 7) { cssColor = "#0" + cssColor.substr(1); }
                 }
                 reaperMap[r[2]] = { 
-                    name: r[1], id: r[2], start: parseFloat(r[3]), end: parseFloat(r[4]),
-                    duration: parseFloat(r[4]) - parseFloat(r[3]), color: cssColor 
+                    name: r[1],
+                    id: r[2],
+                    start: parseFloatDigits(r[3]),
+                    end: parseFloatDigits(r[4]),
+                    duration: parseFloat(r[4]) - parseFloat(r[3]),
+                    color: cssColor 
                 };
             }
         }
