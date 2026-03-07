@@ -12,7 +12,10 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
 ## 🌟 Key Features
 
 * **Live Region Sync:** Automatically pulls song names and durations from your Reaper project regions.
-* **Drag & Drop Sorting:** Visually reorder your setlist on the fly. The order is saved instantly to your device.
+* **Sorting:**
+    * Use **Drag and Drop** to visually reorder your setlist on the fly.
+    * Click on **Song Index** to enter a new song position in your setlist.
+    * The order is saved instantly to your device.
 * **Setlist Management:** Create, rename, and delete multiple setlists (e.g., "Rehearsal", "Friday Gig").
 * **Setlist Stats:** Instantly see the count of **Active Songs** and the **Total Playtime** for the set (automatically excludes skipped/disabled tracks).
 * **Smart Playback Logic:**
