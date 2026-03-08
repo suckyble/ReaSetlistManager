@@ -194,6 +194,7 @@
             font-size: 20px; font-weight: 800; color: #546e7a; 
             min-width: 36px; text-align: center;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 4px 0; border-radius: 8px;
+            cursor: pointer;
         }
         .region-index::before { content: counter(song-counter); }
         .region-index.colored {
@@ -582,7 +583,7 @@
             var indexClass = r.color ? 'region-index colored' : 'region-index';
             
             var html = '';
-            html += '<div class="' + indexClass + '" style="' + indexStyle + '"></div>';
+            html += '<div class="' + indexClass + '" style="' + indexStyle + '" onclick="reorderPrompt('+ r.id + ');"></div>';
             html += '<div class="drag-handle">&#9776;</div>';
             html += '<div class="song-info">';
             html += '  <div class="song-header">';
@@ -650,6 +651,22 @@
     function findPrevValidSong(startIndex) {
         for (var i = startIndex - 1; i >= 0; i--) { if (!displayList[i].skipped) return displayList[i]; }
         return null;
+    }
+
+    function reorderPrompt(id)
+    {
+        var item; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
+        if(!item) return;
+        var newPos = parseInt(prompt("New position for Song \"" + item.name +"\"?"));
+        if(!newPos || newPos < 1 || newPos > displayList.length)
+            return;
+        displayList.splice(newPos - 1, 0, displayList.splice(i, 1)[0]);
+        var newOrder = [];
+        lastRenderChecksum = JSON.stringify(displayList.map(function(r){
+            newOrder.push({ id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop });
+            return { id: r.id, chain: r.chain, skipped: r.skipped, loop: r.loop, name: r.name, color: r.color }; 
+        }));
+        setlists[currentSetlistName] = newOrder; saveCurrentState();
     }
 
     // --- 7. PLAYBACK ---
