@@ -11,7 +11,7 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
 
 ## 🌟 Key Features
 
-* **Live Region Sync:** Automatically pulls song names and durations from your Reaper project regions.
+* **Live Region Sync:** Automatically pulls song names and durations from your Reaper project regions as well as the markers.
 * **Sorting:**
     * Use **Drag and Drop** to visually reorder your setlist on the fly.
     * Click on **Song Index** to enter a new song position in your setlist.
@@ -30,6 +30,7 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
 * **Backup:** Export and Import your setlist data via JSON files.
 * **Touch Optimized:** Designed with large tap targets for iPads/Android tablets - transport controls are placed in a sticky footer.
 * **Region Color Sync:** Automatically displays the color of your Reaper regions for better visual organization and quick identification.
+* **Markers:** Automatically shows the markers for each song in up to 3 rows. Disable this via the "Show markers" option.
 
 ## 🛠️ Installation (Offline Ready)
 

@@ -208,14 +208,19 @@
         }
         .drag-handle:active { cursor: grabbing; color: #90caf9; }
         
-        .song-info { flex-grow: 1; min-width: 0; }
+        .song-info { flex-grow: 1; min-width: 0; margin-top: 0px; }
+        body.show-markers .song-info { margin-top: -30px; }
         .song-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: baseline; }
         .song-name { font-weight: 600; color: #fff; font-size: 1.1em; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .song-duration { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; color: #90a4ae; font-weight: 500; font-size: 0.95em; min-width: 50px; text-align: right; }
         .song-duration.live-time { color: #00e676; font-weight: 800; text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
         
-        .progress-bg { background: rgba(17, 17, 17, 0.6); height: 6px; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .progress-container { position: relative; width: 100%; }
+        .progress-bg { position: relative; background: rgba(17, 17, 17, 0.6); height: 6px; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
         .progress-fill { background: linear-gradient(90deg, #00e676 0%, #00c853 100%); height: 100%; width: 0%; transition: width 0.1s linear; box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); }
+        .marker-line { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(244, 67, 54, 0.95); transform: translateX(-50%); }
+        .marker-labels { position: relative; margin-top: 8px; overflow: visible; }
+        .marker-label { position: absolute; transform: translateX(-50%); color: #ff5252; font-size: 10px; line-height: 1; white-space: nowrap; text-shadow: 0 0 2px rgba(0,0,0,0.8); }
         
         .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
         .btn-row-group { display: flex; gap: 6px; width: 100%; }
@@ -323,6 +328,11 @@
             <span class="help-icon" onclick="showHelp('hide')">?</span>
         </div>
         <div class="toggle-wrapper">
+            <label class="switch"><input type="checkbox" id="markerToggle" onchange="toggleMarkers()"><span class="slider round"></span></label>
+            <span>Show Markers</span>
+            <span class="help-icon" onclick="showHelp('markers')">?</span>
+        </div>
+        <div class="toggle-wrapper">
             <label class="switch"><input type="checkbox" id="initSongMidiToggle" checked><span class="slider round"></span></label>
             <span>Init song to send MIDI</span>
             <span class="help-icon" onclick="showHelp('initsongmidi')">?</span>
@@ -411,11 +421,13 @@
     // --- 1. REAPER CONNECTION ---
     wwr_req_recur("TRANSPORT", 100);
     wwr_req_recur("REGION", 1000); 
+    wwr_req_recur("MARKER", 10000);
     wwr_start(); 
 
     // --- 2. STATE ---
-    var g_regions = [];      
-    var displayList = [];    
+    var g_regions = [];
+    var g_markers = [];
+    var displayList = [];
     var isPlaying = false;
     var currentPos = 0.0;
     var queuedRegion = null;
@@ -426,6 +438,7 @@
     
     // View State
     var hideSkippedMode = (localStorage.getItem("reaper_hide_skipped") === "true");
+    var showMarkersMode = (localStorage.getItem("reaper_show_markers") === "true");
 
     // STORAGE
     var STORAGE_KEY = "reaper_setlists_v9"; 
@@ -437,7 +450,8 @@
 
     // Init View Toggle
     document.getElementById("hideSkippedToggle").checked = hideSkippedMode;
-    
+    document.getElementById("markerToggle").checked = showMarkersMode;
+    updateSongInfoMargins();
     updateSetlistDropdown();
 
     // --- 3. LISTENER ---
@@ -446,15 +460,36 @@
         var ar = results.split("\n");
         for (var x = 0; x < ar.length; x++) {
             var tok = ar[x].split("\t");
-            if (tok.length > 0) {
-                if (tok[0] === "TRANSPORT") {
+            if(tok.length <= 0)
+                continue;
+
+            switch(tok[0])
+            {
+                case "TRANSPORT":
                     isPlaying = (tok[1] & 1) == 1;
                     currentPos = parseFloat(tok[2]);
                     updatePlaybackUI(); 
-                }
-                else if (tok[0] === "REGION_LIST") g_regions = [];
-                else if (tok[0] === "REGION") g_regions.push(tok);
-                else if (tok[0] === "REGION_LIST_END") syncRegions();
+                    break;
+                case "REGION_LIST": 
+                    g_regions = [];
+                    break;
+                case "REGION":
+                    g_regions.push(tok);
+                    break;
+                case "REGION_LIST_END":
+                    syncRegions();
+                    break;
+                case "MARKER_LIST":
+                    g_markers = [];
+                    break;
+                case "MARKER":
+                    g_markers.push(tok);
+                    break;
+                case "MARKER_LIST_END":
+                    if (!isDragging) {
+                        updateMarkers();
+                    }
+                    break;
             }
         }
     }
@@ -554,6 +589,130 @@
         return (h > 0 ? h + ":" : "") + (h > 0 && m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
     }
 
+    function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function getMarkersForRegion(region) {
+        var result = [];
+        if (!region || !region.duration) return result;
+        for (var i = 0; i < g_markers.length; i++) {
+            var marker = g_markers[i];
+            var markerPos = parseFloat(marker[3]);
+            if (!isNaN(markerPos) && markerPos >= region.start && markerPos <= region.end) {
+                result.push({
+                    id: marker[2],
+                    name: marker[1] || '',
+                    percent: Math.min(100, Math.max(0, ((markerPos - region.start) / region.duration) * 100)),
+                    color: parseInt(marker[4]) || 0
+                });
+            }
+        }
+        result.sort(function(a,b) { return a.percent - b.percent; });
+        return result;
+    }
+
+    function assignMarkerLabelRows(container, labels) {
+        if (labels.length === 0) return;
+        
+        var rows = [{}, {}, {}];
+        
+        for (var i = 0; i < labels.length; i++) {
+            var label = labels[i];
+            var percent = label.percent;
+            var labelWidth = label.element.offsetWidth;
+            var containerWidth = container.offsetWidth;
+            var pixelPos = (percent / 100) * containerWidth;
+            var labelStart = pixelPos - (labelWidth / 2);
+            var labelEnd = labelStart + labelWidth;
+            
+            var assignedRow = -1;
+            for (var r = 0; r < 3; r++) {
+                var hasCollision = false;
+                for (var existingPercent in rows[r]) {
+                    if (rows[r].hasOwnProperty(existingPercent)) {
+                        var range = rows[r][existingPercent];
+                        if (!(labelEnd + 4 < range.start || labelStart - 4 > range.end)) {
+                            hasCollision = true;
+                            break;
+                        }
+                    }
+                }
+                if (!hasCollision) {
+                    assignedRow = r;
+                    rows[r][percent] = {start: labelStart, end: labelEnd};
+                    break;
+                }
+            }
+            if (assignedRow === -1) assignedRow = 0;
+            label.element.style.top = (assignedRow * 12) + 'px';
+        }
+    }
+
+    function updateSongInfoMargins() {
+        document.body.classList.toggle('show-markers', showMarkersMode);
+    }
+
+    function updateMarkers() {
+        if (!showMarkersMode) {
+            // Clear all markers
+            var allMarkerLines = document.querySelectorAll('.marker-line');
+            for (var i = 0; i < allMarkerLines.length; i++) allMarkerLines[i].remove();
+            var allMarkerLabels = document.querySelectorAll('.marker-label');
+            for (var j = 0; j < allMarkerLabels.length; j++) allMarkerLabels[j].remove();
+            return;
+        }
+        for (var k = 0; k < displayList.length; k++) {
+            var r = displayList[k];
+            var row = document.getElementById("row-" + r.id);
+            if (!row) continue;
+            var progressBg = row.querySelector('.progress-bg');
+            var markerLabels = row.querySelector('.marker-labels');
+            if (!progressBg || !markerLabels) continue;
+            
+            // Clear existing markers for this region
+            var existingLines = progressBg.querySelectorAll('.marker-line');
+            for (var l = 0; l < existingLines.length; l++) existingLines[l].remove();
+            var existingLabels = markerLabels.querySelectorAll('.marker-label');
+            for (var m = 0; m < existingLabels.length; m++) existingLabels[m].remove();
+            
+            // Add new markers
+            var regionMarkers = getMarkersForRegion(r);
+            var labelObjs = [];
+            for (var n = 0; n < regionMarkers.length; n++) {
+                var marker = regionMarkers[n];
+                var cssColor = null;
+                if (marker.color > 0) {
+                    cssColor = '#' + (marker.color & 0xFFFFFF).toString(16);
+                    while (cssColor.length < 7) { cssColor = "#0" + cssColor.substr(1); }
+                }
+                var line = document.createElement('div');
+                line.className = 'marker-line';
+                line.style.left = marker.percent + '%';
+                if (cssColor) line.style.backgroundColor = cssColor;
+                progressBg.appendChild(line);
+                
+                var label = document.createElement('div');
+                label.className = 'marker-label';
+                label.style.left = marker.percent + '%';
+                label.style.top = '0px';
+                if (cssColor) label.style.color = cssColor;
+                label.innerHTML = escapeHtml(marker.name);
+                markerLabels.appendChild(label);
+                
+                labelObjs.push({percent: marker.percent, element: label});
+            }
+            if (labelObjs.length > 0) {
+                assignMarkerLabelRows(markerLabels, labelObjs);
+            }
+        }
+    }
+
     function renderSetlist() {
         var listEl = document.getElementById('setlist');
         var scrollPos = listEl.scrollTop;
@@ -590,7 +749,10 @@
             html += '    <span class="song-name">' + r.name + '</span>';
             html += '    <span class="song-duration" id="dur-' + r.id + '" data-length="' + formatTime(r.duration) + '">' + formatTime(r.duration) + '</span>';
             html += '  </div>';
-            html += '  <div class="progress-bg"><div class="progress-fill" id="prog-' + r.id + '"></div></div>';
+            html += '  <div class="progress-container">';
+            html += '    <div class="progress-bg"><div class="progress-fill" id="prog-' + r.id + '"></div></div>';
+            html += '    <div class="marker-labels"></div>';
+            html += '  </div>';
             html += '</div>';
             html += '<div class="song-actions">';
             html += '  <div class="btn-row-group">';
@@ -607,6 +769,8 @@
         listEl.scrollTop = scrollPos;
         document.getElementById('song-count').innerText = "Active Songs: " + activeCount;
         document.getElementById('total-time').innerText = "Active Playtime: " + formatTotalTime(totalDuration);
+        updateMarkers();
+        updateSongInfoMargins();
     }
 
     // --- 6. ACTIONS ---
@@ -615,6 +779,13 @@
         localStorage.setItem("reaper_hide_skipped", hideSkippedMode);
         lastRenderChecksum = ""; 
         syncRegions();
+    }
+
+    function toggleMarkers() {
+        showMarkersMode = document.getElementById("markerToggle").checked;
+        localStorage.setItem("reaper_show_markers", showMarkersMode);
+        updateSongInfoMargins();
+        updateMarkers();
     }
 
     function toggleChain(id) {
@@ -910,6 +1081,7 @@
             queue: "Queue Mode ON = seamless transition.\nQueue Mode OFF = instant jump.",
             stop: "Auto-Stop ON = stops at end of region.\n(Use the chain button to override per song).",
             hide: "Hide Skipped ON = Removes inactive songs from the view for a cleaner list.",
+            markers: "Show Markers ON = display marker lines and labels on each region's progress bar.",
             initsongmidi: "Briefly play song to initialize MIDI commands at the start of the song region. Only works together with Auto-Stop!"
         };
         alert(msgs[topic]);
