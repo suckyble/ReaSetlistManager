@@ -215,12 +215,13 @@
         .song-duration { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; color: #90a4ae; font-weight: 500; font-size: 0.95em; min-width: 50px; text-align: right; }
         .song-duration.live-time { color: #00e676; font-weight: 800; text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
         
-        .progress-container { position: relative; width: 100%; }
-        .progress-bg { position: relative; background: rgba(17, 17, 17, 0.6); height: 6px; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
-        .progress-fill { background: linear-gradient(90deg, #00e676 0%, #00c853 100%); height: 100%; width: 0%; transition: width 0.1s linear; box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); }
-        .marker-line { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(244, 67, 54, 0.95); transform: translateX(-50%); }
-        .marker-labels { position: relative; margin-top: 8px; overflow: visible; }
-        .marker-label { position: absolute; transform: translateX(-50%); color: #ff5252; font-size: 10px; line-height: 1; white-space: nowrap; text-shadow: 0 0 2px rgba(0,0,0,0.8); }
+        .progress-container { position: relative; width: 100%; padding: 6px 0; cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; }
+        .progress-bg { position: relative; background: rgba(17, 17, 17, 0.6); height: 8px; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); pointer-events: none; }
+        .progress-fill { background: linear-gradient(90deg, #00e676 0%, #00c853 100%); height: 100%; width: 0%; transition: width 0.05s linear; box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); pointer-events: none; }
+        .progress-container.scrubbing .progress-fill { transition: none; background: linear-gradient(90deg, #ffeb3b 0%, #ffc107 100%); box-shadow: 0 0 12px rgba(255, 193, 7, 0.7); }
+        .marker-line { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(244, 67, 54, 0.95); transform: translateX(-50%); pointer-events: none; }
+        .marker-labels { position: relative; margin-top: 8px; overflow: visible; pointer-events: none; }
+        .marker-label { position: absolute; transform: translateX(-50%); color: #ff5252; font-size: 10px; line-height: 1; white-space: nowrap; text-shadow: 0 0 2px rgba(0,0,0,0.8); pointer-events: none; }
         
         .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
         .btn-row-group { display: flex; gap: 6px; width: 100%; }
@@ -435,6 +436,7 @@
     var lastRenderChecksum = "";
     var isDragging = false;
     var isTransitioning = false;
+    var isScrubbing = false;
     var forcedPlayRegionId = null;
     var initialized = false;
     
@@ -751,7 +753,7 @@
             html += '    <span class="song-name">' + r.name + '</span>';
             html += '    <span class="song-duration" id="dur-' + r.id + '" data-length="' + formatTime(r.duration) + '">' + formatTime(r.duration) + '</span>';
             html += '  </div>';
-            html += '  <div class="progress-container">';
+            html += '  <div class="progress-container" onmousedown="handleScrubStart(event, \'' + r.id + '\')" ontouchstart="handleScrubStart(event, \'' + r.id + '\')">';
             html += '    <div class="progress-bg"><div class="progress-fill" id="prog-' + r.id + '"></div></div>';
             html += '    <div class="marker-labels"></div>';
             html += '  </div>';
@@ -842,6 +844,99 @@
         setlists[currentSetlistName] = newOrder; saveCurrentState();
     }
 
+    // --- SCRUBBING (TOUCH & MOUSE COMPATIBLE) ---
+    var scrubRegion = null;
+    var scrubContainer = null;
+    var lastScrubReqTime = 0;
+
+    function handleScrubStart(e, regionId) {
+        if (e.button && e.button !== 0) return;
+        var r = null;
+        for (var i = 0; i < displayList.length; i++) {
+            if (displayList[i].id == regionId) { r = displayList[i]; break; }
+        }
+        if (!r) return;
+
+        scrubRegion = r;
+        scrubContainer = e.currentTarget || e.target.closest('.progress-container');
+        isScrubbing = true;
+        if (scrubContainer) scrubContainer.classList.add('scrubbing');
+
+        // Allow playing if skipped when scrubbed
+        forcedPlayRegionId = r.id;
+
+        updateScrubPos(e, true);
+
+        window.addEventListener('mousemove', handleScrubMove, { passive: false });
+        window.addEventListener('mouseup', handleScrubEnd);
+        window.addEventListener('touchmove', handleScrubMove, { passive: false });
+        window.addEventListener('touchend', handleScrubEnd);
+        window.addEventListener('touchcancel', handleScrubEnd);
+
+        if (e.preventDefault) e.preventDefault();
+    }
+
+    function updateScrubPos(e, sendImmediately) {
+        if (!scrubRegion || !scrubContainer) return;
+        var clientX = 0;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+        } else if (e.clientX !== undefined) {
+            clientX = e.clientX;
+        } else {
+            return;
+        }
+
+        var rect = scrubContainer.getBoundingClientRect();
+        var width = rect.width;
+        if (width <= 0) return;
+
+        var offsetX = clientX - rect.left;
+        var fraction = Math.max(0, Math.min(1, offsetX / width));
+        var targetPos = scrubRegion.start + (fraction * scrubRegion.duration);
+
+        // Update fill bar instantly
+        var bar = document.getElementById("prog-" + scrubRegion.id);
+        if (bar) bar.style.width = (fraction * 100) + "%";
+
+        // Update duration counter instantly
+        var durEl = document.getElementById("dur-" + scrubRegion.id);
+        if (durEl) {
+            var remaining = scrubRegion.end - targetPos;
+            if (remaining < 0) remaining = 0;
+            durEl.innerText = "-" + formatTime(remaining);
+            durEl.classList.add("live-time");
+        }
+
+        // Throttle SET/POS command to REAPER (max every 80ms) to keep old tablets responsive
+        var now = (new Date()).getTime();
+        if (sendImmediately || (now - lastScrubReqTime >= 80)) {
+            lastScrubReqTime = now;
+            wwr_req("SET/POS/" + targetPos);
+        }
+    }
+
+    function handleScrubMove(e) {
+        if (!isScrubbing) return;
+        if (e.preventDefault) e.preventDefault();
+        updateScrubPos(e, false);
+    }
+
+    function handleScrubEnd(e) {
+        if (!isScrubbing) return;
+        updateScrubPos(e, true);
+        if (scrubContainer) scrubContainer.classList.remove('scrubbing');
+        isScrubbing = false;
+        scrubRegion = null;
+        scrubContainer = null;
+
+        window.removeEventListener('mousemove', handleScrubMove);
+        window.removeEventListener('mouseup', handleScrubEnd);
+        window.removeEventListener('touchmove', handleScrubMove);
+        window.removeEventListener('touchend', handleScrubEnd);
+        window.removeEventListener('touchcancel', handleScrubEnd);
+    }
+
     // --- 7. PLAYBACK ---
     function updatePlaybackUI() {
         if (isDragging) return;
@@ -894,14 +989,16 @@
                         row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 }
-                var percent = ((currentPos - activeRegion.start) / activeRegion.duration) * 100;
-                var bar = document.getElementById("prog-" + activeRegion.id);
-                if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + "%";
-                var durEl = document.getElementById("dur-" + activeRegion.id);
-                if (durEl) {
-                    var remaining = activeRegion.end - currentPos;
-                    if (remaining < 0) remaining = 0;
-                    durEl.innerText = "-" + formatTime(remaining); durEl.classList.add("live-time");
+                if (!isScrubbing || (scrubRegion && scrubRegion.id !== activeRegion.id)) {
+                    var percent = ((currentPos - activeRegion.start) / activeRegion.duration) * 100;
+                    var bar = document.getElementById("prog-" + activeRegion.id);
+                    if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + "%";
+                    var durEl = document.getElementById("dur-" + activeRegion.id);
+                    if (durEl) {
+                        var remaining = activeRegion.end - currentPos;
+                        if (remaining < 0) remaining = 0;
+                        durEl.innerText = "-" + formatTime(remaining); durEl.classList.add("live-time");
+                    }
                 }
             }
             var timeRemaining = activeRegion.end - currentPos;
