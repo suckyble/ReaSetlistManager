@@ -215,7 +215,8 @@
         .song-duration { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; color: #90a4ae; font-weight: 500; font-size: 0.95em; min-width: 50px; text-align: right; }
         .song-duration.live-time { color: #00e676; font-weight: 800; text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
         
-        .progress-container { position: relative; width: 100%; padding: 6px 0; cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; }
+        .progress-container { position: relative; width: 100%; padding: 6px 0; touch-action: none; -webkit-tap-highlight-color: transparent; }
+        .region-item.active .progress-container { cursor: pointer; }
         .progress-bg { position: relative; background: rgba(17, 17, 17, 0.6); height: 8px; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); pointer-events: none; }
         .progress-fill { background: linear-gradient(90deg, #00e676 0%, #00c853 100%); height: 100%; width: 0%; transition: width 0.05s linear; box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); pointer-events: none; }
         .progress-container.scrubbing .progress-fill { transition: none; background: linear-gradient(90deg, #ffeb3b 0%, #ffc107 100%); box-shadow: 0 0 12px rgba(255, 193, 7, 0.7); }
@@ -851,19 +852,22 @@
 
     function handleScrubStart(e, regionId) {
         if (e.button && e.button !== 0) return;
-        var r = null;
-        for (var i = 0; i < displayList.length; i++) {
-            if (displayList[i].id == regionId) { r = displayList[i]; break; }
-        }
-        if (!r) return;
+        if (!isPlaying) return;
 
-        scrubRegion = r;
+        // Only allow scrubbing the region that is currently playing
+        var activeIdx = -1;
+        for (var j = 0; j < displayList.length; j++) {
+            var reg = displayList[j];
+            if (currentPos >= (reg.start - 0.05) && currentPos <= (reg.end + 0.05)) { activeIdx = j; break; }
+        }
+        if (activeIdx === -1) return;
+        var currentlyPlayingRegion = displayList[activeIdx];
+        if (currentlyPlayingRegion.id != regionId) return;
+
+        scrubRegion = currentlyPlayingRegion;
         scrubContainer = e.currentTarget || e.target.closest('.progress-container');
         isScrubbing = true;
         if (scrubContainer) scrubContainer.classList.add('scrubbing');
-
-        // Allow playing if skipped when scrubbed
-        forcedPlayRegionId = r.id;
 
         updateScrubPos(e, true);
 
