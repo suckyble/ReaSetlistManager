@@ -434,6 +434,8 @@
     var lastActiveID = null;
     var lastRenderChecksum = "";
     var isDragging = false;
+    var isTransitioning = false;
+    var forcedPlayRegionId = null;
     var initialized = false;
     
     // View State
@@ -851,7 +853,7 @@
         var activeIdx = -1;
         for(var j=0; j<displayList.length; j++) {
             var r = displayList[j];
-            if (currentPos >= r.start && currentPos <= r.end) { activeIdx = j; break; }
+            if (currentPos >= (r.start - 0.05) && currentPos <= (r.end + 0.05)) { activeIdx = j; break; }
         }
         var activeRegion = (activeIdx !== -1) ? displayList[activeIdx] : null;
 
@@ -865,9 +867,23 @@
         }
 
         if (activeRegion) {
-            if (activeRegion.skipped) {
-                var next = findNextValidSong(activeIdx);
-                if (next) { wwr_req("SET/POS/" + next.start); return; }
+            var isForced = (forcedPlayRegionId !== null && String(activeRegion.id) === String(forcedPlayRegionId));
+            if (activeRegion.skipped && !isForced) {
+                if (!isTransitioning) {
+                    var next = findNextValidSong(activeIdx);
+                    if (next) { 
+                        isTransitioning = true;
+                        wwr_req("SET/POS/" + next.start); 
+                        setTimeout(function() { isTransitioning = false; }, 600);
+                        return; 
+                    } else if (document.getElementById('autoStopToggle').checked) {
+                        isTransitioning = true;
+                        wwr_req(1016);
+                        setTimeout(function() { isTransitioning = false; }, 600);
+                        return;
+                    }
+                }
+                return;
             }
             var row = document.getElementById("row-" + activeRegion.id);
             if (row) {
@@ -889,13 +905,23 @@
                 }
             }
             var timeRemaining = activeRegion.end - currentPos;
-            if (timeRemaining <= 0.2 && timeRemaining > -1 && isPlaying) {
-                if (activeRegion.loop) { wwr_req("SET/POS/" + activeRegion.start); return; }
+            if (timeRemaining <= 0.2 && timeRemaining > -1 && isPlaying && !isTransitioning) {
+                if (activeRegion.loop) { 
+                    isTransitioning = true;
+                    wwr_req("SET/POS/" + activeRegion.start); 
+                    setTimeout(function() { isTransitioning = false; }, 600);
+                    return; 
+                }
                 
                 if (queuedRegion) {
-                    wwr_req("SET/POS/" + queuedRegion.start); queuedRegion = null;
+                    isTransitioning = true;
+                    var qStart = queuedRegion.start;
+                    forcedPlayRegionId = queuedRegion.id;
+                    queuedRegion = null;
                     var queuedEls = document.querySelectorAll('.region-item');
                     for(var k=0; k<queuedEls.length; k++) queuedEls[k].classList.remove('queued');
+                    wwr_req("SET/POS/" + qStart);
+                    setTimeout(function() { isTransitioning = false; }, 600);
                     return;
                 } 
                 var shouldPlayNext = false;
@@ -904,12 +930,28 @@
 
                 if (shouldPlayNext) {
                     var nextRegion = findNextValidSong(activeIdx);
-                    if (nextRegion) { wwr_req("SET/POS/" + nextRegion.start); return; }
+                    if (nextRegion) { 
+                        forcedPlayRegionId = null;
+                        isTransitioning = true;
+                        wwr_req("SET/POS/" + nextRegion.start); 
+                        setTimeout(function() { isTransitioning = false; }, 600);
+                        return; 
+                    }
                 }
                 if (document.getElementById('autoStopToggle').checked && !activeRegion.chain) {
+                    forcedPlayRegionId = null;
+                    isTransitioning = true;
                     wwr_req(1016); 
                     var nextRegion2 = findNextValidSong(activeIdx);
-                    if (nextRegion2) { setTimeout(function() { wwr_req("SET/POS/" + nextRegion2.start); triggerMidi(); }, 100); }
+                    if (nextRegion2) { 
+                        setTimeout(function() { 
+                            wwr_req("SET/POS/" + nextRegion2.start); 
+                            triggerMidi(); 
+                            setTimeout(function() { isTransitioning = false; }, 500);
+                        }, 100); 
+                    } else {
+                        setTimeout(function() { isTransitioning = false; }, 600);
+                    }
                 }
             }
         }
@@ -918,7 +960,10 @@
     function playRegion(start, id) {
         var queueMode = document.getElementById('queueModeToggle').checked;
         if (!isPlaying || !queueMode) {
+            forcedPlayRegionId = id;
+            isTransitioning = true;
             wwr_req("SET/POS/" + start); wwr_req(1007); queuedRegion = null;
+            setTimeout(function() { isTransitioning = false; }, 600);
             var allItems = document.querySelectorAll('.region-item');
             for(var i=0; i<allItems.length; i++) allItems[i].classList.remove('queued');
         } else {
