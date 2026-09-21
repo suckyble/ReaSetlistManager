@@ -352,7 +352,8 @@
 <div class="transport-footer">
     <button class="btn-transport btn-play" onclick="togglePlay()">&#9654; PLAY</button>
     <button class="btn-transport btn-stop" onclick="smartStop()">&#9632; STOP</button>
-    <button id="footer-loop-btn" class="btn-transport btn-loop-transport" onclick="toggleCurrentLoop()">&#8635;</button>
+    <button id="footer-repeat-transport-btn" class="btn-transport btn-loop-transport" onclick="toggleTransportRepeat()">&#8635; REPEAT</button>
+    <button id="footer-loop-song-btn" class="btn-transport btn-loop-transport" onclick="toggleCurrentLoop()">&#8635; SONG</button>
     <button class="btn-transport btn-refresh" onclick="wwr_start()">SYNC</button>
 </div>
 
@@ -432,6 +433,7 @@
     var displayList = [];
     var isPlaying = false;
     var currentPos = 0.0;
+    var transportRepeatOn = false;
     var queuedRegion = null;
     var lastActiveID = null;
     var lastRenderChecksum = "";
@@ -473,6 +475,7 @@
                 case "TRANSPORT":
                     isPlaying = (tok[1] & 1) == 1;
                     currentPos = parseFloat(tok[2]);
+                    transportRepeatOn = parseInt(tok[3], 10) !== 0;
                     updatePlaybackUI(); 
                     break;
                 case "REGION_LIST": 
@@ -815,6 +818,10 @@
             saveCurrentState(); lastRenderChecksum = ""; syncRegions();
         }
     }
+
+    function toggleTransportRepeat() {
+        wwr_req("SET/REPEAT/-1;TRANSPORT");
+    }
     
     function toggleSkip(id) {
         var item = null; for(var i=0; i<displayList.length; i++) { if(displayList[i].id == id) { item = displayList[i]; break; } }
@@ -956,7 +963,13 @@
         }
         var activeRegion = (activeIdx !== -1) ? displayList[activeIdx] : null;
 
-        var loopBtn = document.getElementById("footer-loop-btn");
+        var repeatBtn = document.getElementById("footer-repeat-transport-btn");
+        if (repeatBtn) {
+            if (transportRepeatOn) repeatBtn.classList.add("active");
+            else repeatBtn.classList.remove("active");
+        }
+
+        var loopBtn = document.getElementById("footer-loop-song-btn");
         if (activeRegion && activeRegion.loop) loopBtn.classList.add("active");
         else loopBtn.classList.remove("active");
 

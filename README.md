@@ -23,7 +23,8 @@ It's using Vanilla JavaScript for backwards compatibility so it should work on v
     * **Auto-Stop:** Automatically stop playback at the end of a song.
     * **Follow Actions (Chaining):** Link specific songs together to play continuously (overriding Auto-Stop), allowing for custom mini-sets or medleys.
     * **Skip / Disable Songs:** Mark specific songs to be skipped. Playback will automatically jump over them to the next active song.
-    * **Loop Mode (⟳):** Toggle the purple loop icon to repeat a song indefinitely. This overrides Auto-Stop and Chaining, making it perfect for ambient vamps while talking to the audience. You must manually toggle it off to proceed to the next song.
+    * **Loop Mode (⟳):** Toggle the purple loop song icon to repeat a song indefinitely. This overrides Auto-Stop and Chaining, making it perfect for ambient vamps while talking to the audience. You must manually toggle it off to proceed to the next song.
+* **Toggle Repeat (⟳):** Toggle the purple repeat button to control REAPERs repeat mode with the current time selection.
 * **Live Time Display:** Shows total song duration when stopped, and switches to a high-visibility **Countdown Timer** during playback.
 * **Hide Skipped Songs:** Toggle the visibility of deactivated songs for a cleaner view. The setlist numbering automatically updates to reflect only the active songs.
 * **Keyboard & Footswitch Support:** Map pedals or keys to trigger playback, navigation, and panic stops.
